@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,10 +30,9 @@ public class MainActivity extends Activity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     /**
-     * Substitute you own sender ID here. This is the project number you got
-     * from the API Console, as described in "Getting Started."
+     * Es el project number obtenido en la API Console, como se explica en "Getting Started."
      */
-    String SENDER_ID = "925462697075";
+    String senderId;
 
     /**
      * Tag used on log messages.
@@ -40,10 +40,10 @@ public class MainActivity extends Activity {
     static final String TAG = "GCM Demo";
 
     TextView mDisplay;
+
     GoogleCloudMessaging gcm;
     AtomicInteger msgId = new AtomicInteger();
     Context context;
-
     String regid;
 
     @Override
@@ -54,6 +54,7 @@ public class MainActivity extends Activity {
         mDisplay = (TextView) findViewById(R.id.display);
 
         context = getApplicationContext();
+        senderId = getSenderId();
 
         // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
         if (checkPlayServices()) {
@@ -156,7 +157,7 @@ public class MainActivity extends Activity {
                     if (gcm == null) {
                         gcm = GoogleCloudMessaging.getInstance(context);
                     }
-                    regid = gcm.register(SENDER_ID);
+                    regid = gcm.register(senderId);
                     msg = "Device registered, registration ID=" + regid;
 
                     // You should send the registration ID to your server over HTTP, so it
@@ -198,7 +199,7 @@ public class MainActivity extends Activity {
                         data.putString("my_message", "Hello World");
                         data.putString("my_action", "com.google.android.gcm.demo.app.ECHO_NOW");
                         String id = Integer.toString(msgId.incrementAndGet());
-                        gcm.send(SENDER_ID + "@gcm.googleapis.com", id, data);
+                        gcm.send(senderId + "@gcm.googleapis.com", id, data);
                         msg = "Sent message";
                     } catch (IOException ex) {
                         msg = "Error :" + ex.getMessage();
@@ -244,6 +245,7 @@ public class MainActivity extends Activity {
         return getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
+
     /**
      * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
      * messages to your app. Not needed for this demo since the device sends upstream messages
@@ -252,4 +254,12 @@ public class MainActivity extends Activity {
     private void sendRegistrationIdToBackend() {
         // Your implementation here.
     }
+
+    // TODO: esto no es responsabilidad de esta clase...
+    // Tal vez un "setting provider" o similar
+    private String getSenderId() {
+        Resources res = getResources();
+        return res.getString(R.string.senderId);
+    }
+
 }
