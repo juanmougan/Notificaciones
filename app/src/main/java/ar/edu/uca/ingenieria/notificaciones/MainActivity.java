@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
      * Substitute you own sender ID here. This is the project number you got
      * from the API Console, as described in "Getting Started."
      */
-    String SENDER_ID = "Your-Sender-ID";
+    String SENDER_ID = "925462697075";
 
     /**
      * Tag used on log messages.
@@ -66,6 +66,7 @@ public class MainActivity extends Activity {
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
+        Log.i(TAG, "regid: " + this.regid);
     }
 
     @Override
@@ -73,6 +74,7 @@ public class MainActivity extends Activity {
         super.onResume();
         // Check device for Play Services APK.
         checkPlayServices();
+        Log.i(TAG, "regid: " + this.regid);
     }
 
     /**
