@@ -14,4 +14,4 @@ Configuración
 
 1. Clonar el proyecto
 2. Setear el Project number - GCM sender ID.
-3. Setear la API key
+3. ~~Setear la API key~~ esto es sólo para el server?
