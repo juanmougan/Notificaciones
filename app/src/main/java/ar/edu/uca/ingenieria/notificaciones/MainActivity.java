@@ -112,7 +112,7 @@ public class MainActivity extends Activity {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -187,6 +187,7 @@ public class MainActivity extends Activity {
     }
 
     // Send an upstream message.
+    // TODO borrar este método
     public void onClick(final View view) {
 
         if (view == findViewById(R.id.send)) {
@@ -246,6 +247,7 @@ public class MainActivity extends Activity {
                 Context.MODE_PRIVATE);
     }
 
+    // TODO implementar esto del lado del server
     /**
      * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
      * messages to your app. Not needed for this demo since the device sends upstream messages
