@@ -2,6 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ar.edu.uca.ingenieria.notificaciones" >
 
+    <!-- Mandar el registration ID al servidor GCM -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Necesito este permiso para usar el WakefulBroadcastReceiver -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Para registrarse y recibir mensajes -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <!-- Para que sólo nuestra aplicación reciba los mensajes -->
+    <permission android:name="ar.edu.uca.ingenieria.notificaciones.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="ar.edu.uca.ingenieria.notificaciones.permission.C2D_MESSAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
