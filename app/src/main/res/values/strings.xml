@@ -6,5 +6,7 @@
     <string name="send">Send</string>
     <string name="clear">Clear</string>
     <string name="titulo_notificacion">UCA Ingeniería</string>
+    <string name="gcm_error_enviar">Error al enviar un mensaje GCM: </string>
+    <string name="gcm_mensaje_borrado">Mensaje borrado en el servidor GCM: </string>
 
 </resources>

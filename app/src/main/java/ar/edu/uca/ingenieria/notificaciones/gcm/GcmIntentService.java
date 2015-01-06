@@ -26,6 +26,9 @@ public class GcmIntentService extends IntentService {
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
 
+    private static final String GCM_TITULO = "gcmTitulo";
+    private static final String GCM_MENSAJE = "gcmMensaje";
+
     public GcmIntentService() {
         super("GcmIntentService");
     }
@@ -45,40 +48,49 @@ public class GcmIntentService extends IntentService {
              * any message types you're not interested in, or that you don't
              * recognize.
              */
+            String tituloNotificacion = extras.getString(GCM_TITULO);
+            String mensajeNotificacion = extras.getString(GCM_MENSAJE);
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification("Send error: " + extras.toString());
+                sendNotification(tituloNotificacion, getGcmErrorEnviar() + mensajeNotificacion);
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification("Deleted messages on server: " +
-                        extras.toString());
+                sendNotification(tituloNotificacion, getGcmMensajeBorrado() +
+                        mensajeNotificacion);
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // This loop represents the service doing some work.
-                for (int i=0; i<5; i++) {
-                    Log.i(TAG, "Working... " + (i+1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
-                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-                // Post notification of received message.
-                sendNotification("Received: " + extras.toString());
-                Log.i(TAG, "Received: " + extras.toString());
+//                doFakeWork(extras);
+                sendNotification(tituloNotificacion, mensajeNotificacion);
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
+    // TODO borrar este metodo
+    private void doFakeWork(Bundle extras) {
+        // This loop represents the service doing some work.
+        for (int i=0; i<5; i++) {
+            Log.i(TAG, "Working... " + (i + 1)
+                    + "/5 @ " + SystemClock.elapsedRealtime());
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
+        // Post notification of received message.
+        sendNotification("GCM", "Received: " + extras.toString());
+        Log.i(TAG, "Received: " + extras.toString());
+    }
+
     // TODO la app final debería hacer algo similar a esto, pero tal vez meter los mensajes en una ListView
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg) {
+    private void sendNotification(String titulo, String msg) {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -90,10 +102,10 @@ public class GcmIntentService extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle(getTituloNotificacion())
+                        .setContentTitle(titulo)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
-                        .setContentText(msg)        // TODO el texto este viene en el JSON
+                        .setContentText(msg)
                         .setAutoCancel(true);
 
         mBuilder.setContentIntent(contentIntent);
@@ -105,6 +117,20 @@ public class GcmIntentService extends IntentService {
     private String getTituloNotificacion() {
         Resources res = getResources();
         return res.getString(R.string.titulo_notificacion);
+    }
+
+    // TODO: esto no es responsabilidad de esta clase...
+    // Tal vez un "setting provider" o similar
+    private String getGcmErrorEnviar() {
+        Resources res = getResources();
+        return res.getString(R.string.gcm_error_enviar);
+    }
+
+    // TODO: esto no es responsabilidad de esta clase...
+    // Tal vez un "setting provider" o similar
+    private String getGcmMensajeBorrado() {
+        Resources res = getResources();
+        return res.getString(R.string.gcm_mensaje_borrado);
     }
 
 }

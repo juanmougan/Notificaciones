@@ -190,32 +190,32 @@ public class MainActivity extends Activity {
     // TODO borrar este método
     public void onClick(final View view) {
 
-        if (view == findViewById(R.id.send)) {
-            new AsyncTask<Void, Void, String>() {
-                @Override
-                protected String doInBackground(Void... params) {
-                    String msg = "";
-                    try {
-                        Bundle data = new Bundle();
-                        data.putString("my_message", "Hello World");
-                        data.putString("my_action", "com.google.android.gcm.demo.app.ECHO_NOW");
-                        String id = Integer.toString(msgId.incrementAndGet());
-                        gcm.send(senderId + "@gcm.googleapis.com", id, data);
-                        msg = "Sent message";
-                    } catch (IOException ex) {
-                        msg = "Error :" + ex.getMessage();
-                    }
-                    return msg;
-                }
-
-                @Override
-                protected void onPostExecute(String msg) {
-                    mDisplay.append(msg + "\n");
-                }
-            }.execute(null, null, null);
-        } else if (view == findViewById(R.id.clear)) {
-            mDisplay.setText("");
-        }
+//        if (view == findViewById(R.id.send)) {
+//            new AsyncTask<Void, Void, String>() {
+//                @Override
+//                protected String doInBackground(Void... params) {
+//                    String msg = "";
+//                    try {
+//                        Bundle data = new Bundle();
+//                        data.putString("my_message", "Hello World");
+//                        data.putString("my_action", "com.google.android.gcm.demo.app.ECHO_NOW");
+//                        String id = Integer.toString(msgId.incrementAndGet());
+//                        gcm.send(senderId + "@gcm.googleapis.com", id, data);
+//                        msg = "Sent message";
+//                    } catch (IOException ex) {
+//                        msg = "Error :" + ex.getMessage();
+//                    }
+//                    return msg;
+//                }
+//
+//                @Override
+//                protected void onPostExecute(String msg) {
+//                    mDisplay.append(msg + "\n");
+//                }
+//            }.execute(null, null, null);
+//        } else if (view == findViewById(R.id.clear)) {
+//            mDisplay.setText("");
+//        }
     }
 
     @Override
