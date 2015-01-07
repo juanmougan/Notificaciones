@@ -16,6 +16,8 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import ar.edu.uca.ingenieria.notificaciones.MainActivity;
 import ar.edu.uca.ingenieria.notificaciones.R;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 /**
  * Un {@link IntentService} específico, que maneja el mensaje GCM. Cuando el servicio termina, llama
  * a GcmBroadcastReceiver.completeWakefulIntent() para soltar el wake lock.
@@ -26,8 +28,8 @@ public class GcmIntentService extends IntentService {
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
 
-    private static final String GCM_TITULO = "gcmTitulo";
-    private static final String GCM_MENSAJE = "gcmMensaje";
+    public static final String GCM_TITULO = "gcmTitulo";
+    public static final String GCM_MENSAJE = "gcmMensaje";
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -68,6 +70,14 @@ public class GcmIntentService extends IntentService {
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
+    private Intent getIntentQueContieneLaNotificacion(String tituloNotificacion, String mensajeNotificacion) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(GCM_TITULO, tituloNotificacion);
+        intent.putExtra(GCM_MENSAJE, mensajeNotificacion);
+        intent.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
+    }
+
     // TODO borrar este metodo
     private void doFakeWork(Bundle extras) {
         // This loop represents the service doing some work.
@@ -86,17 +96,18 @@ public class GcmIntentService extends IntentService {
         Log.i(TAG, "Received: " + extras.toString());
     }
 
-    // TODO la app final debería hacer algo similar a esto, pero tal vez meter los mensajes en una ListView
-    // Put the message into a notification and post it.
-    // This is just one simple example of what you might choose to do with
-    // a GCM message.
+    /**
+     * Pone el título y el mensaje en una notificación, y la postea (la muestra en status bar)
+     * @param titulo título de la notificación
+     * @param msg texto de la notificación
+     */
     private void sendNotification(String titulo, String msg) {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // En teoría Marge, acá invocamos a nuestra aplicación...
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+                getIntentQueContieneLaNotificacion(titulo, msg), PendingIntent.FLAG_UPDATE_CURRENT);
 
         // TODO este Builder debe tener algo que ver con las notificaciones - logo de la UCA?
         NotificationCompat.Builder mBuilder =

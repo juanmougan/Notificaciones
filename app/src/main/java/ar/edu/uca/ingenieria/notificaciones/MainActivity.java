@@ -1,11 +1,8 @@
 package ar.edu.uca.ingenieria.notificaciones;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -16,8 +13,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import ar.edu.uca.ingenieria.notificaciones.gcm.GcmIntentService;
 
 /**
  * Main UI for the demo app.
@@ -76,6 +79,13 @@ public class MainActivity extends Activity {
         // Check device for Play Services APK.
         checkPlayServices();
         Log.i(TAG, "regid: " + this.regid);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        String tituloNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_TITULO);
+        String mensajeNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
+        // TODO meter en la ListView
     }
 
     /**
