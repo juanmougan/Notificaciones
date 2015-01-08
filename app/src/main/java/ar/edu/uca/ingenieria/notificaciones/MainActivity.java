@@ -84,8 +84,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         String tituloNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_TITULO);
+        Log.d(TAG, "Título: " + tituloNotificacion);
         String mensajeNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
+        Log.d(TAG, "Mensaje: " + mensajeNotificacion);
         // TODO meter en la ListView
+        super.onNewIntent(intent);
     }
 
     /**
