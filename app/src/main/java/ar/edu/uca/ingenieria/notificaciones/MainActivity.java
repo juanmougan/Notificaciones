@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,9 +19,13 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ar.edu.uca.ingenieria.notificaciones.adapter.NotificacionesAdapter;
 import ar.edu.uca.ingenieria.notificaciones.gcm.GcmIntentService;
+import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
 
 /**
  * Main UI for the demo app.
@@ -43,6 +48,8 @@ public class MainActivity extends Activity {
     static final String TAG = "GCM Demo";
 
     TextView mDisplay;
+    private List<Notificacion> notificaciones = new ArrayList<Notificacion>();
+    private ListView listaNotificaciones;
 
     GoogleCloudMessaging gcm;
     AtomicInteger msgId = new AtomicInteger();
@@ -71,6 +78,10 @@ public class MainActivity extends Activity {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
         Log.i(TAG, "regid: " + this.regid);
+
+        // Inflar la ListView
+        this.listaNotificaciones = (ListView) findViewById(R.id.lista_notificaciones);
+
     }
 
     @Override
@@ -87,8 +98,18 @@ public class MainActivity extends Activity {
         Log.d(TAG, "Título: " + tituloNotificacion);
         String mensajeNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
         Log.d(TAG, "Mensaje: " + mensajeNotificacion);
-        // TODO meter en la ListView
+        agregarMensaje(tituloNotificacion, mensajeNotificacion);
         super.onNewIntent(intent);
+    }
+
+
+    private void agregarMensaje(String titulo, String mensaje) {
+        this.notificaciones.add(new Notificacion(titulo, mensaje));
+        // Create the adapter to convert the array to views
+        NotificacionesAdapter adapter = new NotificacionesAdapter(this, this.notificaciones);
+        // Attach the adapter to a ListView
+        ListView listView = (ListView) findViewById(R.id.lista_notificaciones);
+        listView.setAdapter(adapter);
     }
 
     /**

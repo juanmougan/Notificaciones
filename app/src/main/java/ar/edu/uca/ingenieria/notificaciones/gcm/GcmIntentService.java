@@ -50,7 +50,8 @@ public class GcmIntentService extends IntentService {
              * any message types you're not interested in, or that you don't
              * recognize.
              */
-            String tituloNotificacion = extras.getString(GCM_TITULO);
+            String tituloNotificacion = getPrefijoTituloNotificacion() + " - " +
+                    extras.getString(GCM_TITULO);       // TODO y si viene null? Puede pasar!
             String mensajeNotificacion = extras.getString(GCM_MENSAJE);
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
@@ -81,7 +82,7 @@ public class GcmIntentService extends IntentService {
     // TODO borrar este metodo
     private void doFakeWork(Bundle extras) {
         // This loop represents the service doing some work.
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             Log.i(TAG, "Working... " + (i + 1)
                     + "/5 @ " + SystemClock.elapsedRealtime());
             try {
@@ -98,8 +99,9 @@ public class GcmIntentService extends IntentService {
 
     /**
      * Pone el título y el mensaje en una notificación, y la postea (la muestra en status bar)
+     *
      * @param titulo título de la notificación
-     * @param msg texto de la notificación
+     * @param msg    texto de la notificación
      */
     private void sendNotification(String titulo, String msg) {
         mNotificationManager = (NotificationManager)
@@ -125,7 +127,7 @@ public class GcmIntentService extends IntentService {
 
     // TODO: esto no es responsabilidad de esta clase...
     // Tal vez un "setting provider" o similar
-    private String getTituloNotificacion() {
+    private String getPrefijoTituloNotificacion() {
         Resources res = getResources();
         return res.getString(R.string.titulo_notificacion);
     }
