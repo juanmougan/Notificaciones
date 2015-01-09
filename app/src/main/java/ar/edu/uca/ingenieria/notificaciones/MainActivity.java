@@ -81,6 +81,11 @@ public class MainActivity extends Activity {
 
         // Inflar la ListView
         this.listaNotificaciones = (ListView) findViewById(R.id.lista_notificaciones);
+        String tituloNotificacion = (String) getIntent().getCharSequenceExtra(GcmIntentService.GCM_TITULO);
+        Log.d(TAG, "Título: " + tituloNotificacion);
+        String mensajeNotificacion = (String) getIntent().getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
+        Log.d(TAG, "Mensaje: " + mensajeNotificacion);
+        agregarMensaje(tituloNotificacion, mensajeNotificacion);
 
     }
 
@@ -94,12 +99,12 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         String tituloNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_TITULO);
         Log.d(TAG, "Título: " + tituloNotificacion);
         String mensajeNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
         Log.d(TAG, "Mensaje: " + mensajeNotificacion);
         agregarMensaje(tituloNotificacion, mensajeNotificacion);
-        super.onNewIntent(intent);
     }
 
 
