@@ -13,6 +13,8 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.util.Date;
+
 import ar.edu.uca.ingenieria.notificaciones.MainActivity;
 import ar.edu.uca.ingenieria.notificaciones.R;
 
@@ -30,6 +32,7 @@ public class GcmIntentService extends IntentService {
 
     public static final String GCM_TITULO = "gcmTitulo";
     public static final String GCM_MENSAJE = "gcmMensaje";
+    public static final String GCM_FECHA = "gcmFechaMensaje";
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -53,28 +56,30 @@ public class GcmIntentService extends IntentService {
             String tituloNotificacion = getPrefijoTituloNotificacion() + " - " +
                     extras.getString(GCM_TITULO);       // TODO y si viene null? Puede pasar!
             String mensajeNotificacion = extras.getString(GCM_MENSAJE);
+            Date fechaNotificacion = new Date(extras.getLong(GCM_FECHA));
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification(tituloNotificacion, getGcmErrorEnviar() + mensajeNotificacion);
+                sendNotification(tituloNotificacion, getGcmErrorEnviar() + mensajeNotificacion, fechaNotificacion);
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
                 sendNotification(tituloNotificacion, getGcmMensajeBorrado() +
-                        mensajeNotificacion);
+                        mensajeNotificacion, fechaNotificacion);
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 //                doFakeWork(extras);
-                sendNotification(tituloNotificacion, mensajeNotificacion);
+                sendNotification(tituloNotificacion, mensajeNotificacion, fechaNotificacion);
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
-    private Intent getIntentQueContieneLaNotificacion(String tituloNotificacion, String mensajeNotificacion) {
+    private Intent getIntentQueContieneLaNotificacion(String tituloNotificacion, String mensajeNotificacion, Date fechaNotificacion) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(GCM_TITULO, tituloNotificacion);
         intent.putExtra(GCM_MENSAJE, mensajeNotificacion);
+        intent.putExtra(GCM_FECHA, fechaNotificacion.getTime());
         intent.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
@@ -93,7 +98,7 @@ public class GcmIntentService extends IntentService {
         }
         Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
         // Post notification of received message.
-        sendNotification("GCM", "Received: " + extras.toString());
+        sendNotification("GCM", "Received: " + extras.toString(), new Date());
         Log.i(TAG, "Received: " + extras.toString());
     }
 
@@ -103,13 +108,13 @@ public class GcmIntentService extends IntentService {
      * @param titulo título de la notificación
      * @param msg    texto de la notificación
      */
-    private void sendNotification(String titulo, String msg) {
+    private void sendNotification(String titulo, String msg, Date fecha) {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // En teoría Marge, acá invocamos a nuestra aplicación...
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                getIntentQueContieneLaNotificacion(titulo, msg), PendingIntent.FLAG_UPDATE_CURRENT);
+                getIntentQueContieneLaNotificacion(titulo, msg, fecha), PendingIntent.FLAG_UPDATE_CURRENT);
 
         // TODO este Builder debe tener algo que ver con las notificaciones - logo de la UCA?
         NotificationCompat.Builder mBuilder =
