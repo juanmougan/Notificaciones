@@ -82,12 +82,21 @@ public class MainActivity extends Activity {
 
         // Inflar la ListView
         this.listaNotificaciones = (ListView) findViewById(R.id.lista_notificaciones);
+        Notificacion notificacion = getNotificacionFromIntent();
+        agregarMensaje(notificacion.getTitulo(), notificacion.getMensaje(),
+                notificacion.getFechaMensaje());
+
+    }
+
+    private Notificacion getNotificacionFromIntent() {
         String tituloNotificacion = (String) getIntent().getCharSequenceExtra(GcmIntentService.GCM_TITULO);
         Log.d(TAG, "Título: " + tituloNotificacion);
         String mensajeNotificacion = (String) getIntent().getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
         Log.d(TAG, "Mensaje: " + mensajeNotificacion);
-        agregarMensaje(tituloNotificacion, mensajeNotificacion);
-
+        // TODO esto muestra "1/1/1970" si no viene la fecha...
+        long fechaMilisegundos = getIntent().getLongExtra(GcmIntentService.GCM_FECHA, new Date(0).getTime());
+        Date fechaNotificacion = new Date(fechaMilisegundos);
+        return new Notificacion(tituloNotificacion, mensajeNotificacion, fechaNotificacion);
     }
 
     @Override
@@ -101,18 +110,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        String tituloNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_TITULO);
-        Log.d(TAG, "Título: " + tituloNotificacion);
-        String mensajeNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
-        Log.d(TAG, "Mensaje: " + mensajeNotificacion);
-        // TODO esto muestra "1/1/1970" si no viene la fecha...
-        long fechaMilisegundos = intent.getLongExtra(GcmIntentService.GCM_FECHA, new Date(0).getTime());
-        Date fechaNotificacion = new Date(fechaMilisegundos);
-        agregarMensaje(tituloNotificacion, mensajeNotificacion, fechaNotificacion);
+        this.setIntent(intent);
+        Notificacion notificacion = this.getNotificacionFromIntent();
+        agregarMensaje(notificacion.getTitulo(), notificacion.getMensaje(),
+                notificacion.getFechaMensaje());
     }
 
     private void agregarMensaje(String titulo, String mensaje, Date fecha) {
+        // TODO aca llegan las Notificaciones
         this.notificaciones.add(new Notificacion(titulo, mensaje, fecha));
+        // TODO pero no cambia la ListView
         // Create the adapter to convert the array to views
         NotificacionesAdapter adapter = new NotificacionesAdapter(this, this.notificaciones);
         // Attach the adapter to a ListView
