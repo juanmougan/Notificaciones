@@ -20,6 +20,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -104,12 +105,14 @@ public class MainActivity extends Activity {
         Log.d(TAG, "Título: " + tituloNotificacion);
         String mensajeNotificacion = (String) intent.getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
         Log.d(TAG, "Mensaje: " + mensajeNotificacion);
-        agregarMensaje(tituloNotificacion, mensajeNotificacion);
+        // TODO esto muestra "1/1/1970" si no viene la fecha...
+        long fechaMilisegundos = intent.getLongExtra(GcmIntentService.GCM_FECHA, new Date(0).getTime());
+        Date fechaNotificacion = new Date(fechaMilisegundos);
+        agregarMensaje(tituloNotificacion, mensajeNotificacion, fechaNotificacion);
     }
 
-
-    private void agregarMensaje(String titulo, String mensaje) {
-        this.notificaciones.add(new Notificacion(titulo, mensaje));
+    private void agregarMensaje(String titulo, String mensaje, Date fecha) {
+        this.notificaciones.add(new Notificacion(titulo, mensaje, fecha));
         // Create the adapter to convert the array to views
         NotificacionesAdapter adapter = new NotificacionesAdapter(this, this.notificaciones);
         // Attach the adapter to a ListView
