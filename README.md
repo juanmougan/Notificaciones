@@ -1,3 +1,6 @@
+Usando branch activity_detalle
+==============================
+
 Notificaciones
 ==============
 
