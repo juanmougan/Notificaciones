@@ -33,7 +33,6 @@ import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
  */
 public class MainActivity extends Activity {
 
-    public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -49,11 +48,8 @@ public class MainActivity extends Activity {
     static final String TAG = "GCM Demo";
 
     TextView mDisplay;
-    private List<Notificacion> notificaciones = new ArrayList<Notificacion>();
-    private ListView listaNotificaciones;
 
     GoogleCloudMessaging gcm;
-    AtomicInteger msgId = new AtomicInteger();
     Context context;
     String regid;
 
@@ -66,7 +62,17 @@ public class MainActivity extends Activity {
 
         context = getApplicationContext();
         senderId = getSenderId();
+        intentarRegistrarGooglePlayServices();
 
+        Notificacion notificacion = getNotificacionFromIntent();
+
+    }
+
+    /**
+     * Verifica si Google Play Services está instalado en el dispositivo. De ser así, intenta
+     * registrarse y guarda el regid obtenido.
+     */
+    private void intentarRegistrarGooglePlayServices() {
         // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
@@ -79,13 +85,6 @@ public class MainActivity extends Activity {
             Log.i(TAG, "No valid Google Play Services APK found.");
         }
         Log.i(TAG, "regid: " + this.regid);
-
-        // Inflar la ListView
-        this.listaNotificaciones = (ListView) findViewById(R.id.lista_notificaciones);
-        Notificacion notificacion = getNotificacionFromIntent();
-        agregarMensaje(notificacion.getTitulo(), notificacion.getMensaje(),
-                notificacion.getFechaMensaje());
-
     }
 
     private Notificacion getNotificacionFromIntent() {
@@ -105,26 +104,13 @@ public class MainActivity extends Activity {
         // Check device for Play Services APK.
         checkPlayServices();
         Log.i(TAG, "regid: " + this.regid);
+        Log.d(TAG, "onResume");
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        this.setIntent(intent);
-        Notificacion notificacion = this.getNotificacionFromIntent();
-        agregarMensaje(notificacion.getTitulo(), notificacion.getMensaje(),
-                notificacion.getFechaMensaje());
-    }
-
-    private void agregarMensaje(String titulo, String mensaje, Date fecha) {
-        // TODO aca llegan las Notificaciones
-        this.notificaciones.add(new Notificacion(titulo, mensaje, fecha));
-        // TODO pero no cambia la ListView
-        // Create the adapter to convert the array to views
-        NotificacionesAdapter adapter = new NotificacionesAdapter(this, this.notificaciones);
-        // Attach the adapter to a ListView
-        ListView listView = (ListView) findViewById(R.id.lista_notificaciones);
-        listView.setAdapter(adapter);
+        Log.d(TAG, "onNewIntent");
     }
 
     /**
@@ -233,38 +219,6 @@ public class MainActivity extends Activity {
                 mDisplay.append(msg + "\n");
             }
         }.execute(null, null, null);
-    }
-
-    // Send an upstream message.
-    // TODO borrar este método
-    public void onClick(final View view) {
-
-//        if (view == findViewById(R.id.send)) {
-//            new AsyncTask<Void, Void, String>() {
-//                @Override
-//                protected String doInBackground(Void... params) {
-//                    String msg = "";
-//                    try {
-//                        Bundle data = new Bundle();
-//                        data.putString("my_message", "Hello World");
-//                        data.putString("my_action", "com.google.android.gcm.demo.app.ECHO_NOW");
-//                        String id = Integer.toString(msgId.incrementAndGet());
-//                        gcm.send(senderId + "@gcm.googleapis.com", id, data);
-//                        msg = "Sent message";
-//                    } catch (IOException ex) {
-//                        msg = "Error :" + ex.getMessage();
-//                    }
-//                    return msg;
-//                }
-//
-//                @Override
-//                protected void onPostExecute(String msg) {
-//                    mDisplay.append(msg + "\n");
-//                }
-//            }.execute(null, null, null);
-//        } else if (view == findViewById(R.id.clear)) {
-//            mDisplay.setText("");
-//        }
     }
 
     @Override
