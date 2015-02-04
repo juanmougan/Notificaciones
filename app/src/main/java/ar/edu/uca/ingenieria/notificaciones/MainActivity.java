@@ -10,7 +10,6 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import ar.edu.uca.ingenieria.notificaciones.adapter.NotificacionesAdapter;
 import ar.edu.uca.ingenieria.notificaciones.gcm.GcmIntentService;
@@ -36,22 +34,21 @@ public class MainActivity extends Activity {
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = "GCM Demo";
 
     /**
      * Es el project number obtenido en la API Console, como se explica en "Getting Started."
      */
     String senderId;
 
-    /**
-     * Tag used on log messages.
-     */
-    static final String TAG = "GCM Demo";
-
     TextView mDisplay;
+    List<Notificacion> notificaciones;
+    private ListView notificacionesListView;
 
     GoogleCloudMessaging gcm;
     Context context;
     String regid;
+    private NotificacionesAdapter notificacionesAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +62,23 @@ public class MainActivity extends Activity {
         intentarRegistrarGooglePlayServices();
 
         Notificacion notificacion = getNotificacionFromIntent();
+        this.notificaciones = new ArrayList<Notificacion>();
+        inicializarListView(notificacion);
+    }
 
+    private void inicializarListView(Notificacion notificacion) {
+        this.notificaciones.add(notificacion);
+        // Create the adapter to convert the array to views
+        notificacionesAdapter = new NotificacionesAdapter(this, this.notificaciones);
+        // Attach the adapter to a ListView
+        this.notificacionesListView = (ListView) findViewById(R.id.lista_notificaciones);
+        this.notificacionesListView.setAdapter(notificacionesAdapter);
+    }
+
+    private void agregarNotificacion(Notificacion notificacion) {
+        this.notificaciones.add(notificacion);
+        // this.notificacionesAdapter.add(notificacion);
+        this.notificacionesAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -111,6 +124,8 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.d(TAG, "onNewIntent");
+        this.setIntent(intent);
+        this.agregarNotificacion(this.getNotificacionFromIntent());
     }
 
     /**
