@@ -1,5 +1,5 @@
-Usando branch activity_detalle
-==============================
+Usando branch one_activity_only
+===============================
 
 Notificaciones
 ==============
