@@ -19,8 +19,8 @@ import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
  */
 public class NotificacionesAdapter extends ArrayAdapter<Notificacion> {
 
-    public NotificacionesAdapter(Context context, List<Notificacion> notificaciones) {
-        super(context, 0, notificaciones);
+    public NotificacionesAdapter(Context context) {
+        super(context, 0);
     }
 
     @Override

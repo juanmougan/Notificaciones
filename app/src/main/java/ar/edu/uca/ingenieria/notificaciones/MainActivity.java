@@ -1,6 +1,7 @@
 package ar.edu.uca.ingenieria.notificaciones;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,7 +30,7 @@ import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
 /**
  * Main UI for the demo app.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -41,10 +42,6 @@ public class MainActivity extends Activity {
      */
     String senderId;
 
-    TextView mDisplay;
-    List<Notificacion> notificaciones;
-    private ListView notificacionesListView;
-
     GoogleCloudMessaging gcm;
     Context context;
     String regid;
@@ -54,31 +51,28 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-        mDisplay = (TextView) findViewById(R.id.display);
-
         context = getApplicationContext();
         senderId = getSenderId();
         intentarRegistrarGooglePlayServices();
 
         Notificacion notificacion = getNotificacionFromIntent();
-        this.notificaciones = new ArrayList<Notificacion>();
         inicializarListView(notificacion);
+        this.notificacionesAdapter.add(notificacion);
     }
 
     private void inicializarListView(Notificacion notificacion) {
-        this.notificaciones.add(notificacion);
         // Create the adapter to convert the array to views
-        notificacionesAdapter = new NotificacionesAdapter(this, this.notificaciones);
+        notificacionesAdapter = new NotificacionesAdapter(this);
         // Attach the adapter to a ListView
-        this.notificacionesListView = (ListView) findViewById(R.id.lista_notificaciones);
-        this.notificacionesListView.setAdapter(notificacionesAdapter);
+        // this.notificacionesListView = (ListView) findViewById(R.id.lista_notificaciones);
+        // this.notificacionesListView.setAdapter(notificacionesAdapter);
+        this.setListAdapter(notificacionesAdapter);
     }
 
     private void agregarNotificacion(Notificacion notificacion) {
-        this.notificaciones.add(notificacion);
-        // this.notificacionesAdapter.add(notificacion);
-        this.notificacionesAdapter.notifyDataSetChanged();
+        // this.notificaciones.add(notificacion);
+
+        // this.notificacionesAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -125,7 +119,11 @@ public class MainActivity extends Activity {
         super.onNewIntent(intent);
         Log.d(TAG, "onNewIntent");
         this.setIntent(intent);
+        if (this.notificacionesAdapter == null) {
+            Log.d(TAG, "null adapter!");
+        }
         this.agregarNotificacion(this.getNotificacionFromIntent());
+        this.notificacionesAdapter.add(this.getNotificacionFromIntent());
     }
 
     /**
@@ -231,7 +229,7 @@ public class MainActivity extends Activity {
 
             @Override
             protected void onPostExecute(String msg) {
-                mDisplay.append(msg + "\n");
+                Log.d(TAG, "Got regid: " + msg + "from Google.");
             }
         }.execute(null, null, null);
     }
