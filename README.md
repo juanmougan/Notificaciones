@@ -1,5 +1,5 @@
-Usando branch one_activity_only
-===============================
+Usando branch initial_configuration_activity
+============================================
 
 Notificaciones
 ==============
