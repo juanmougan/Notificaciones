@@ -1,6 +1,6 @@
 package ar.edu.uca.ingenieria.notificaciones;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,19 +10,13 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import ar.edu.uca.ingenieria.notificaciones.adapter.NotificacionesAdapter;
 import ar.edu.uca.ingenieria.notificaciones.gcm.GcmIntentService;
@@ -31,41 +25,45 @@ import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
 /**
  * Main UI for the demo app.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = "Notificaciones MainActivity";
 
     /**
      * Es el project number obtenido en la API Console, como se explica en "Getting Started."
      */
     String senderId;
 
-    /**
-     * Tag used on log messages.
-     */
-    static final String TAG = "GCM Demo";
-
-    TextView mDisplay;
-
     GoogleCloudMessaging gcm;
     Context context;
     String regid;
+    private NotificacionesAdapter notificacionesAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-        mDisplay = (TextView) findViewById(R.id.display);
-
         context = getApplicationContext();
         senderId = getSenderId();
         intentarRegistrarGooglePlayServices();
 
-        Notificacion notificacion = getNotificacionFromIntent();
+        Notificacion notificacion;
+        // TODO refactor - usar el Parcelable aca y consultar por notificacion != null
+        // ver https://trello.com/c/N6KsGEjN
+        if (this.getIntent().getExtras() != null) {
+            notificacion = getNotificacionFromIntent();
+            inicializarListView();
+            this.notificacionesAdapter.add(notificacion);
+        }
+    }
 
+    private void inicializarListView() {
+        // Crear el Adapter y setearlo a la ListView que tiene esta ListActivity
+        notificacionesAdapter = new NotificacionesAdapter(this);
+        this.setListAdapter(notificacionesAdapter);
     }
 
     /**
@@ -111,6 +109,11 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Log.d(TAG, "onNewIntent");
+        this.setIntent(intent);
+        if (this.notificacionesAdapter == null) {
+            this.inicializarListView();
+        }
+        this.notificacionesAdapter.add(this.getNotificacionFromIntent());
     }
 
     /**
@@ -216,7 +219,7 @@ public class MainActivity extends Activity {
 
             @Override
             protected void onPostExecute(String msg) {
-                mDisplay.append(msg + "\n");
+                Log.d(TAG, "Response from Google: " + msg);
             }
         }.execute(null, null, null);
     }
@@ -251,6 +254,8 @@ public class MainActivity extends Activity {
     }
 
     // TODO implementar esto del lado del server
+    // Ver https://trello.com/c/EDjnB9dm
+    // La lógica correspondiente NO es responsabilidad de esta clase!
     /**
      * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
      * messages to your app. Not needed for this demo since the device sends upstream messages

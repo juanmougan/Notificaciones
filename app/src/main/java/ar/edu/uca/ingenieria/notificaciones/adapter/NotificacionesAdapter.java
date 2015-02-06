@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ar.edu.uca.ingenieria.notificaciones.R;
 import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
 
@@ -19,8 +16,8 @@ import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
  */
 public class NotificacionesAdapter extends ArrayAdapter<Notificacion> {
 
-    public NotificacionesAdapter(Context context, List<Notificacion> notificaciones) {
-        super(context, 0, notificaciones);
+    public NotificacionesAdapter(Context context) {
+        super(context, 0);
     }
 
     @Override
