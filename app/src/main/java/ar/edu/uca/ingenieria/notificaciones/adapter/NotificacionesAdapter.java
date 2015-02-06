@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ar.edu.uca.ingenieria.notificaciones.R;
 import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
 
