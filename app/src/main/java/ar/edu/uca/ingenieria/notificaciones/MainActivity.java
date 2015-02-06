@@ -9,6 +9,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -29,6 +30,7 @@ public class MainActivity extends ListActivity {
 
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
+    private static final String PREFERENCE_FIRST_RUN = "preferenceFirstRun";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "Notificaciones MainActivity";
 
@@ -47,6 +49,9 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         context = getApplicationContext();
+        if (isFirstRun()) {
+            // TODO start settings activity
+        }
         senderId = getSenderId();
         intentarRegistrarGooglePlayServices();
 
@@ -114,6 +119,13 @@ public class MainActivity extends ListActivity {
             this.inicializarListView();
         }
         this.notificacionesAdapter.add(this.getNotificacionFromIntent());
+    }
+
+    private boolean isFirstRun() {
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean firstRun = p.getBoolean(PREFERENCE_FIRST_RUN, true);
+        p.edit().putBoolean(PREFERENCE_FIRST_RUN, false).commit();
+        return firstRun;
     }
 
     /**
