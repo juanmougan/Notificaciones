@@ -1,6 +1,5 @@
 package ar.edu.uca.ingenieria.notificaciones;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,17 +10,13 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import ar.edu.uca.ingenieria.notificaciones.adapter.NotificacionesAdapter;
 import ar.edu.uca.ingenieria.notificaciones.gcm.GcmIntentService;
@@ -60,12 +55,12 @@ public class MainActivity extends ListActivity {
         // ver https://trello.com/c/N6KsGEjN
         if (this.getIntent().getExtras() != null) {
             notificacion = getNotificacionFromIntent();
-            inicializarListView(notificacion);
+            inicializarListView();
             this.notificacionesAdapter.add(notificacion);
         }
     }
 
-    private void inicializarListView(Notificacion notificacion) {
+    private void inicializarListView() {
         // Crear el Adapter y setearlo a la ListView que tiene esta ListActivity
         notificacionesAdapter = new NotificacionesAdapter(this);
         this.setListAdapter(notificacionesAdapter);
@@ -115,6 +110,9 @@ public class MainActivity extends ListActivity {
         super.onNewIntent(intent);
         Log.d(TAG, "onNewIntent");
         this.setIntent(intent);
+        if (this.notificacionesAdapter == null) {
+            this.inicializarListView();
+        }
         this.notificacionesAdapter.add(this.getNotificacionFromIntent());
     }
 
