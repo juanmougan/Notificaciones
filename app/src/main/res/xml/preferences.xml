@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/config_datos_personales"
+        android:key="pref_key_storage_settings">
+        <EditTextPreference
+            android:key="pref_key_nombre_alumno"
+            android:dependency="pref_key_auto_delete"
+            android:title="@string/config_nombre_alumno" />
+        <EditTextPreference
+            android:key="pref_key_nombre_alumno"
+            android:dependency="pref_key_auto_delete"
+            android:title="@string/config_apellido_alumno" />
+        <EditTextPreference
+            android:key="pref_key_nombre_alumno"
+            android:dependency="pref_key_auto_delete"
+            android:title="@string/config_numero_registro" />
+        <!-- TODO completar esta List -->
+        <ListPreference
+            android:key="pref_key_nombre_alumno"
+            android:dependency="pref_key_auto_delete"
+            android:title="@string/config_carrera" />
+        <EditTextPreference
+            android:key="pref_key_nombre_alumno"
+            android:dependency="pref_key_auto_delete"
+            android:title="@string/config_email" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

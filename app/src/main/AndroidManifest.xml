@@ -10,8 +10,10 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <!-- Para que sólo nuestra aplicación reciba los mensajes -->
-    <permission android:name="ar.edu.uca.ingenieria.notificaciones.permission.C2D_MESSAGE"
+    <permission
+        android:name="ar.edu.uca.ingenieria.notificaciones.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="ar.edu.uca.ingenieria.notificaciones.permission.C2D_MESSAGE" />
 
     <application
@@ -19,7 +21,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -40,14 +41,20 @@
             android:name=".gcm.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
+
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <!-- TODO ver si este package esta bien -->
                 <category android:name="ar.edu.uca.ingenieria.notificaciones" />
             </intent-filter>
         </receiver>
+
         <service android:name=".gcm.GcmIntentService" />
 
+        <activity
+            android:name=".config.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
     </application>
 
 </manifest>
