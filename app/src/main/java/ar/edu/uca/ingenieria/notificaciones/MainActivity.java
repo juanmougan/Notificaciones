@@ -35,7 +35,7 @@ public class MainActivity extends ListActivity {
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "GCM Demo";
+    private static final String TAG = "Notificaciones MainActivity";
 
     /**
      * Es el project number obtenido en la API Console, como se explica en "Getting Started."
@@ -55,24 +55,20 @@ public class MainActivity extends ListActivity {
         senderId = getSenderId();
         intentarRegistrarGooglePlayServices();
 
-        Notificacion notificacion = getNotificacionFromIntent();
-        inicializarListView(notificacion);
-        this.notificacionesAdapter.add(notificacion);
+        Notificacion notificacion;
+        // TODO refactor - usar el Parcelable aca y consultar por notificacion != null
+        // ver https://trello.com/c/N6KsGEjN
+        if (this.getIntent().getExtras() != null) {
+            notificacion = getNotificacionFromIntent();
+            inicializarListView(notificacion);
+            this.notificacionesAdapter.add(notificacion);
+        }
     }
 
     private void inicializarListView(Notificacion notificacion) {
-        // Create the adapter to convert the array to views
+        // Crear el Adapter y setearlo a la ListView que tiene esta ListActivity
         notificacionesAdapter = new NotificacionesAdapter(this);
-        // Attach the adapter to a ListView
-        // this.notificacionesListView = (ListView) findViewById(R.id.lista_notificaciones);
-        // this.notificacionesListView.setAdapter(notificacionesAdapter);
         this.setListAdapter(notificacionesAdapter);
-    }
-
-    private void agregarNotificacion(Notificacion notificacion) {
-        // this.notificaciones.add(notificacion);
-
-        // this.notificacionesAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -119,10 +115,6 @@ public class MainActivity extends ListActivity {
         super.onNewIntent(intent);
         Log.d(TAG, "onNewIntent");
         this.setIntent(intent);
-        if (this.notificacionesAdapter == null) {
-            Log.d(TAG, "null adapter!");
-        }
-        this.agregarNotificacion(this.getNotificacionFromIntent());
         this.notificacionesAdapter.add(this.getNotificacionFromIntent());
     }
 
@@ -229,7 +221,7 @@ public class MainActivity extends ListActivity {
 
             @Override
             protected void onPostExecute(String msg) {
-                Log.d(TAG, "Got regid: " + msg + "from Google.");
+                Log.d(TAG, "Response from Google: " + msg);
             }
         }.execute(null, null, null);
     }
@@ -264,6 +256,8 @@ public class MainActivity extends ListActivity {
     }
 
     // TODO implementar esto del lado del server
+    // Ver https://trello.com/c/EDjnB9dm
+    // La lógica correspondiente NO es responsabilidad de esta clase!
     /**
      * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
      * messages to your app. Not needed for this demo since the device sends upstream messages
