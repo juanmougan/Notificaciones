@@ -6,24 +6,19 @@
         android:key="pref_key_storage_settings">
         <EditTextPreference
             android:key="pref_key_nombre_alumno"
-            android:dependency="pref_key_auto_delete"
             android:title="@string/config_nombre_alumno" />
         <EditTextPreference
-            android:key="pref_key_nombre_alumno"
-            android:dependency="pref_key_auto_delete"
+            android:key="pref_key_apellido_alumno"
             android:title="@string/config_apellido_alumno" />
         <EditTextPreference
-            android:key="pref_key_nombre_alumno"
-            android:dependency="pref_key_auto_delete"
+            android:key="pref_key_numero_registro"
             android:title="@string/config_numero_registro" />
         <!-- TODO completar esta List -->
         <ListPreference
-            android:key="pref_key_nombre_alumno"
-            android:dependency="pref_key_auto_delete"
+            android:key="pref_key_carrera"
             android:title="@string/config_carrera" />
         <EditTextPreference
-            android:key="pref_key_nombre_alumno"
-            android:dependency="pref_key_auto_delete"
+            android:key="pref_key_email"
             android:title="@string/config_email" />
     </PreferenceCategory>
 

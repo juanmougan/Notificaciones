@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import ar.edu.uca.ingenieria.notificaciones.adapter.NotificacionesAdapter;
+import ar.edu.uca.ingenieria.notificaciones.config.SettingsActivity;
 import ar.edu.uca.ingenieria.notificaciones.gcm.GcmIntentService;
 import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
 
@@ -239,6 +242,26 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            this.startActivity(settingsIntent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
