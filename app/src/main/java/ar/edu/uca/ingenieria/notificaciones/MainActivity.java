@@ -53,7 +53,8 @@ public class MainActivity extends ListActivity {
 
         context = getApplicationContext();
         if (isFirstRun()) {
-            // TODO start settings activity
+            Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
+            this.startActivity(openSettingsIntent);
         }
         senderId = getSenderId();
         intentarRegistrarGooglePlayServices();
@@ -127,7 +128,7 @@ public class MainActivity extends ListActivity {
     private boolean isFirstRun() {
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
         boolean firstRun = p.getBoolean(PREFERENCE_FIRST_RUN, true);
-        p.edit().putBoolean(PREFERENCE_FIRST_RUN, false).commit();
+        p.edit().putBoolean(PREFERENCE_FIRST_RUN, false).apply();
         return firstRun;
     }
 
