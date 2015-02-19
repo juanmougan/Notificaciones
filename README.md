@@ -1,5 +1,9 @@
-Usando branch initial_configuration_activity
+Usando branch 
 ============================================
+
+### initial_configuration_activity tiene la SettingsActivity
+
+### retrofit_added tiene el Webservice, y el rename a Student
 
 Notificaciones
 ==============
