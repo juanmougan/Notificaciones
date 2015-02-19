@@ -11,20 +11,20 @@ import java.util.Date;
  * Esta clase es necesaria para poder tipar el {@link android.widget.ArrayAdapter}
  * Creado por juanmougan@gmail.com on 08/01/15.
  */
-public class Notificacion implements Parcelable {
+public class Notification implements Parcelable {
 
     private String titulo;
     private String mensaje;
     private Date fechaMensaje;
-    private static final String TAG = Notificacion.class.getSimpleName();
+    private static final String TAG = Notification.class.getSimpleName();
 
-    public Notificacion(String titulo, String mensaje, Date fechaMensaje) {
+    public Notification(String titulo, String mensaje, Date fechaMensaje) {
         this.titulo = titulo;
         this.mensaje = mensaje;
         this.fechaMensaje = fechaMensaje;
     }
 
-    public Notificacion(Parcel in) {
+    public Notification(Parcel in) {
         String[] data = new String[2];
 
         in.readStringArray(data);
@@ -76,16 +76,16 @@ public class Notificacion implements Parcelable {
         dest.writeLong(this.fechaMensaje.getTime());
     }
 
-    public static final Creator CREATOR = new Creator<Notificacion>() {
+    public static final Creator CREATOR = new Creator<Notification>() {
 
         @Override
-        public Notificacion createFromParcel(Parcel in) {
-            return new Notificacion(in);
+        public Notification createFromParcel(Parcel in) {
+            return new Notification(in);
         }
 
         @Override
-        public Notificacion[] newArray(int size) {
-            return new Notificacion[size];
+        public Notification[] newArray(int size) {
+            return new Notification[size];
         }
     };
 }
