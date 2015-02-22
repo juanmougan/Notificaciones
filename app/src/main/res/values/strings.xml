@@ -14,5 +14,6 @@
     <string name="config_carrera">Carrera</string>
     <string name="config_numero_registro">Número de registro</string>
     <string name="config_email">Email</string>
+    <string name="config_ok_button">Confirmar y subir datos al servidor</string>
 
 </resources>
