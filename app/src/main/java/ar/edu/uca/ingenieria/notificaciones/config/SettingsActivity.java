@@ -9,8 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import ar.edu.uca.ingenieria.notificaciones.R;
+import ar.edu.uca.ingenieria.notificaciones.model.Student;
+import ar.edu.uca.ingenieria.notificaciones.webservice.StudentService;
 
 public class SettingsActivity extends Activity {
 
@@ -25,6 +29,21 @@ public class SettingsActivity extends Activity {
                     .add(R.id.container, new SettingsFragment())
                     .commit();
         }
+        createListenerForButton();
+    }
+
+    private void createListenerForButton() {
+        Button sendButton = (Button) this.findViewById(R.id.sendStudentButton);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Student s = new Student();
+                s.setFirstName("Juan");
+                s = StudentService.createStudent(s);
+                Toast.makeText(SettingsActivity.this, "OK pressed, id: " + s.getId(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 

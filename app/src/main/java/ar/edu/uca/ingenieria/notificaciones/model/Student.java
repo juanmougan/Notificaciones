@@ -8,6 +8,8 @@ package ar.edu.uca.ingenieria.notificaciones.model;
  */
 public class Student {
 
+    private String id;
+
     private String firstName;
 
     private String lastName;
@@ -21,6 +23,14 @@ public class Student {
     private String email;
 
     public Student() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {
