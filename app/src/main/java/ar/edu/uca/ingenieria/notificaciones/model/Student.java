@@ -6,7 +6,9 @@ package ar.edu.uca.ingenieria.notificaciones.model;
  * salvo por la lista de subscripción.
  * Created by juanmougan@gmail.com on 06/02/2015.
  */
-public class Alumno {
+public class Student {
+
+    private String id;
 
     private String firstName;
 
@@ -14,13 +16,21 @@ public class Alumno {
 
     private String fileNumber;
 
-    private Carrera career;
+    private Career career;
 
     private String regid;
 
     private String email;
 
-    public Alumno() {
+    public Student() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -47,11 +57,11 @@ public class Alumno {
         this.fileNumber = fileNumber;
     }
 
-    public Carrera getCareer() {
+    public Career getCareer() {
         return career;
     }
 
-    public void setCareer(Carrera career) {
+    public void setCareer(Career career) {
         this.career = career;
     }
 

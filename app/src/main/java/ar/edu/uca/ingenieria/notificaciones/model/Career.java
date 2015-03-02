@@ -4,7 +4,7 @@ package ar.edu.uca.ingenieria.notificaciones.model;
  * Modela una Carrera (incluyendo Ciclo Común).
  * Created by juanmougan@gmail.com on 06/02/2015.
  */
-public enum Carrera {
+public enum Career {
 
     CICLO_COMUN("Ciclo Común"),
     AMBIENTAL("Ambiental"),
@@ -15,7 +15,7 @@ public enum Carrera {
 
     private String nombre;
 
-    Carrera(String name) {
+    Career(String name) {
         this.nombre = name;
     }
 

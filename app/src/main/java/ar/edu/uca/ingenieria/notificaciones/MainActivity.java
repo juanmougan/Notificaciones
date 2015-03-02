@@ -24,7 +24,7 @@ import java.util.Date;
 import ar.edu.uca.ingenieria.notificaciones.adapter.NotificacionesAdapter;
 import ar.edu.uca.ingenieria.notificaciones.config.SettingsActivity;
 import ar.edu.uca.ingenieria.notificaciones.gcm.GcmIntentService;
-import ar.edu.uca.ingenieria.notificaciones.model.Notificacion;
+import ar.edu.uca.ingenieria.notificaciones.model.Notification;
 
 /**
  * Main UI for the demo app.
@@ -59,7 +59,7 @@ public class MainActivity extends ListActivity {
         senderId = getSenderId();
         intentarRegistrarGooglePlayServices();
 
-        Notificacion notificacion;
+        Notification notificacion;
         // TODO refactor - usar el Parcelable aca y consultar por notificacion != null
         // ver https://trello.com/c/N6KsGEjN
         if (this.getIntent().getExtras() != null) {
@@ -94,7 +94,7 @@ public class MainActivity extends ListActivity {
         Log.i(TAG, "regid: " + this.regid);
     }
 
-    private Notificacion getNotificacionFromIntent() {
+    private Notification getNotificacionFromIntent() {
         String tituloNotificacion = (String) getIntent().getCharSequenceExtra(GcmIntentService.GCM_TITULO);
         Log.d(TAG, "Título: " + tituloNotificacion);
         String mensajeNotificacion = (String) getIntent().getCharSequenceExtra(GcmIntentService.GCM_MENSAJE);
@@ -102,7 +102,7 @@ public class MainActivity extends ListActivity {
         // TODO esto muestra "1/1/1970" si no viene la fecha...
         long fechaMilisegundos = getIntent().getLongExtra(GcmIntentService.GCM_FECHA, new Date(0).getTime());
         Date fechaNotificacion = new Date(fechaMilisegundos);
-        return new Notificacion(tituloNotificacion, mensajeNotificacion, fechaNotificacion);
+        return new Notification(tituloNotificacion, mensajeNotificacion, fechaNotificacion);
     }
 
     @Override
@@ -138,17 +138,17 @@ public class MainActivity extends ListActivity {
      * the Google Play Store or enable it in the device's system settings.
      */
     private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
-            }
-            return false;
-        }
+//        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+//        if (resultCode != ConnectionResult.SUCCESS) {
+//            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+//                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+//                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+//            } else {
+//                Log.i(TAG, "This device is not supported.");
+//                finish();
+//            }
+//            return false;
+//        }
         return true;
     }
 
