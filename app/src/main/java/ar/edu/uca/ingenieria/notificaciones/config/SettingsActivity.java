@@ -15,6 +15,9 @@ import android.widget.Toast;
 import ar.edu.uca.ingenieria.notificaciones.R;
 import ar.edu.uca.ingenieria.notificaciones.model.Student;
 import ar.edu.uca.ingenieria.notificaciones.webservice.StudentService;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class SettingsActivity extends Activity {
 
@@ -39,9 +42,7 @@ public class SettingsActivity extends Activity {
             public void onClick(View v) {
                 Student s = new Student();
                 s.setFirstName("Juan");
-                s = StudentService.createStudent(s);
-                Toast.makeText(SettingsActivity.this, "OK pressed, id: " + s.getId(),
-                        Toast.LENGTH_LONG).show();
+                StudentService.createStudent(s, SettingsActivity.this);
             }
         });
     }

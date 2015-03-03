@@ -1,23 +1,34 @@
 package ar.edu.uca.ingenieria.notificaciones.webservice;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import ar.edu.uca.ingenieria.notificaciones.model.Student;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Implementación del servicio que se comunica con el backend.
  */
 public class StudentService {
 
-    public static Student createStudent(final Student student) {
-        final StudentWebService webService = WebServiceFactory.getWebService(StudentWebService.class);
-        new AsyncTask<Void, Void, Student>() {
+    public static void createStudent(Student student, final Context context) {
+        StudentWebService webService = WebServiceFactory.getWebService(StudentWebService.class);
+        webService.createStudent(student, new Callback<Student>() {
             @Override
-            protected Student doInBackground(Void... params) {
-                return webService.createStudent(student);
+            public void success(Student createdStudent, Response response) {
+                Toast.makeText(context, "Datos guardados. ID = " + createdStudent.getId(),
+                        Toast.LENGTH_LONG).show();
             }
-        };
-        return null;
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(context, "Error: " + retrofitError.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }
