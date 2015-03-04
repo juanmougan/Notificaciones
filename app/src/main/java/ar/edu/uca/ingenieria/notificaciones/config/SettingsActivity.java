@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import ar.edu.uca.ingenieria.notificaciones.R;
+import ar.edu.uca.ingenieria.notificaciones.model.Career;
 import ar.edu.uca.ingenieria.notificaciones.model.Student;
 import ar.edu.uca.ingenieria.notificaciones.webservice.StudentService;
 import retrofit.Callback;
@@ -40,8 +41,9 @@ public class SettingsActivity extends Activity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Student s = new Student();
-                s.setFirstName("Juan");
+                Student s = new Student.StudentBuilder().firstName("first name").
+                        lastName("last name").fileNumber("file number")./*career(Career.INFORMATICA).*/
+                        regid("regid").email("email@email.com").build();
                 StudentService.createStudent(s, SettingsActivity.this);
             }
         });
