@@ -2,8 +2,11 @@ package ar.edu.uca.ingenieria.notificaciones.config;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,12 +44,26 @@ public class SettingsActivity extends Activity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Student s = new Student.StudentBuilder().firstName("first name").
-                        lastName("last name").fileNumber("file number")./*career(Career.INFORMATICA).*/
-                        regid("regid").email("email@email.com").build();
+                Student s = obtenerDatosAlumno();
+//                Student s = new Student.StudentBuilder().firstName("first name").
+//                        lastName("last name").fileNumber("file number")./*career(Career.INFORMATICA).*/
+//                        regid("regid").email("email@email.com").build();
                 StudentService.createStudent(s, SettingsActivity.this);
             }
         });
+    }
+
+    // TODO mover a otra clase? Ojo, preciso un Context
+    private Student obtenerDatosAlumno() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Student student = new Student.StudentBuilder()
+                .firstName(prefs.getString("firstName", ""))
+                .lastName(prefs.getString("lastName", ""))
+                .fileNumber(prefs.getString("fileNumber", ""))
+                .regid(prefs.getString("regid", ""))
+                .email(prefs.getString("email", ""))
+                .build();
+        return student;
     }
 
 
