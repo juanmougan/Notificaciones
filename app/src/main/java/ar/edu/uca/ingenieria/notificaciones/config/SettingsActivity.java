@@ -53,15 +53,18 @@ public class SettingsActivity extends Activity {
         });
     }
 
-    // TODO mover a otra clase? Ojo, preciso un Context
+    // TODO mover a otra clase?
     private Student obtenerDatosAlumno() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = this.getSharedPreferences(
+                SettingsFragment.SETTINGS_PREFS_FILE,
+                Context.MODE_PRIVATE);
+        // TODO Arreglar Carrera y completar regid
         Student student = new Student.StudentBuilder()
-                .firstName(prefs.getString("firstName", ""))
-                .lastName(prefs.getString("lastName", ""))
-                .fileNumber(prefs.getString("fileNumber", ""))
+                .firstName(prefs.getString("pref_key_nombre_alumno", ""))
+                .lastName(prefs.getString("pref_key_apellido_alumno", ""))
+                .fileNumber(prefs.getString("pref_key_numero_registro", ""))
                 .regid(prefs.getString("regid", ""))
-                .email(prefs.getString("email", ""))
+                .email(prefs.getString("pref_key_email", ""))
                 .build();
         return student;
     }
@@ -94,12 +97,19 @@ public class SettingsActivity extends Activity {
      */
     public static class SettingsFragment extends PreferenceFragment {
 
+        private final static String TAG = SettingsFragment.class.getSimpleName();
+        public final static String SETTINGS_PREFS_FILE = SettingsFragment.class.getName() + ".PREF_SETTINGS";
+
         public SettingsFragment() {
         }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            // Define the settings file to use by this settings fragment
+            this.getPreferenceManager().setSharedPreferencesName(SETTINGS_PREFS_FILE);
+
+            // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
         }
     }
