@@ -1,7 +1,6 @@
 package ar.edu.uca.ingenieria.notificaciones.webservice;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 

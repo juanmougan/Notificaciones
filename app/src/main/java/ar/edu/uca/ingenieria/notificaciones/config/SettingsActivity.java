@@ -1,27 +1,18 @@
 package ar.edu.uca.ingenieria.notificaciones.config;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import ar.edu.uca.ingenieria.notificaciones.R;
-import ar.edu.uca.ingenieria.notificaciones.model.Career;
 import ar.edu.uca.ingenieria.notificaciones.model.Student;
 import ar.edu.uca.ingenieria.notificaciones.webservice.StudentService;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class SettingsActivity extends Activity {
 
