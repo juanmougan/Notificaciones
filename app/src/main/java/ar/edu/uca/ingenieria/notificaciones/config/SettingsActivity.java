@@ -39,9 +39,18 @@ public class SettingsActivity extends Activity {
 //                Student s = new Student.StudentBuilder().firstName("first name").
 //                        lastName("last name").fileNumber("file number")./*career(Career.INFORMATICA).*/
 //                        regid("regid").email("email@email.com").build();
-                StudentService.createStudent(s, SettingsActivity.this);
+                if (yaExisteAlumno()) {
+                    // TODO update
+                } else {
+                    StudentService.createStudent(s, SettingsActivity.this);
+                }
             }
         });
+    }
+
+    // TODO al ID lo estoy guardando en las SP por ahora
+    private boolean yaExisteAlumno() {
+        return false;
     }
 
     // TODO mover a otra clase?

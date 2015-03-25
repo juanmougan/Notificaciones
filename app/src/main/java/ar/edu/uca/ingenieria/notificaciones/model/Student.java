@@ -8,7 +8,7 @@ package ar.edu.uca.ingenieria.notificaciones.model;
  */
 public class Student {
 
-    private String id;
+    private int id;
 
     private String firstName;
 
@@ -35,11 +35,11 @@ public class Student {
         this.email = studentBuilder.email;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -93,7 +93,7 @@ public class Student {
 
     public static class StudentBuilder {
 
-        private String id;
+        private int id;
 
         private String firstName;
 
@@ -110,7 +110,7 @@ public class Student {
         public StudentBuilder() {
         }
 
-        public StudentBuilder id(String id) {
+        public StudentBuilder id(int id) {
             this.id = id;
             return this;
         }
