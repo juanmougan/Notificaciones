@@ -1,10 +1,3 @@
-Usando branch 
-============================================
-
-### ~~initial_configuration_activity tiene la SettingsActivity~~ mergeado a master
-
-### retrofit_added tiene el Webservice, y el rename a Student
-
 Notificaciones
 ==============
 
