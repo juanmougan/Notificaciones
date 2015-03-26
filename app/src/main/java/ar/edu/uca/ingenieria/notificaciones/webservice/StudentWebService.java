@@ -17,6 +17,6 @@ public interface StudentWebService {
     void createStudent(@Body Student student, Callback<Student> callback);
 
     @PUT("/student")
-    Student updateStudent(@Body Student student, @Query("id") String id);
+    void updateStudent(@Body Student student, @Query("id") int id, Callback<Student> callback);
 
 }

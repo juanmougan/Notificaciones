@@ -16,6 +16,7 @@ public class WebServiceFactory {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(ENDPOINT)
                 .setConverter(new GsonConverter(new Gson()))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
         return restAdapter.create(webServiceClass);
     }

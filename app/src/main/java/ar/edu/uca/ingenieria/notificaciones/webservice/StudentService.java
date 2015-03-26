@@ -43,4 +43,28 @@ public class StudentService {
         });
     }
 
+    public static void updateStudent(Student student, final Context context) {
+        Toast.makeText(context, "ID: " + student.getId(), Toast.LENGTH_LONG).show();
+        StudentWebService webService = WebServiceFactory.getWebService(StudentWebService.class);
+        final SharedPreferences prefs = context.getSharedPreferences(
+                SettingsActivity.SettingsFragment.SETTINGS_PREFS_FILE,
+                Context.MODE_PRIVATE);
+        // TODO refactor!!! https://trello.com/c/OvbyOlWC
+        webService.updateStudent(student, student.getId(), new Callback<Student>() {
+            @Override
+            public void success(Student student, Response response) {
+                Log.d(TAG, "Se actualizó el Alumno con id: " + student.getId());
+                Toast.makeText(context, "Datos guardados, id: " + student.getId(),
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, "Error: " + error);
+                Toast.makeText(context, "Error: " + error.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 }

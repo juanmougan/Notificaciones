@@ -40,7 +40,7 @@ public class SettingsActivity extends Activity {
 //                        lastName("last name").fileNumber("file number")./*career(Career.INFORMATICA).*/
 //                        regid("regid").email("email@email.com").build();
                 if (yaExisteAlumno()) {
-                    // TODO update
+                    StudentService.updateStudent(s, SettingsActivity.this);
                 } else {
                     StudentService.createStudent(s, SettingsActivity.this);
                 }
@@ -50,7 +50,11 @@ public class SettingsActivity extends Activity {
 
     // TODO al ID lo estoy guardando en las SP por ahora
     private boolean yaExisteAlumno() {
-        return false;
+        SharedPreferences prefs = this.getSharedPreferences(
+                SettingsFragment.SETTINGS_PREFS_FILE,
+                Context.MODE_PRIVATE);
+        int id = prefs.getInt("student_id", 0);
+        return id > 0;
     }
 
     // TODO mover a otra clase?
@@ -60,6 +64,7 @@ public class SettingsActivity extends Activity {
                 Context.MODE_PRIVATE);
         // TODO Arreglar Carrera y completar regid
         Student student = new Student.StudentBuilder()
+                .id(prefs.getInt("student_id", 0))
                 .firstName(prefs.getString("pref_key_nombre_alumno", ""))
                 .lastName(prefs.getString("pref_key_apellido_alumno", ""))
                 .fileNumber(prefs.getString("pref_key_numero_registro", ""))
