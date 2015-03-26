@@ -11,6 +11,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 /**
  * Implementación del servicio que se comunica con el backend.
  */
@@ -27,24 +29,23 @@ public class StudentService {
         webService.createStudent(student, new Callback<Student>() {
             @Override
             public void success(Student createdStudent, Response response) {
-                Log.d(TAG, "Se creó el Alumno con id: " + createdStudent.getId());
+                Log.d(TAG, "INSERT Student id: " + createdStudent.getId());
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("student_id", createdStudent.getId());
                 editor.apply();
-                Toast.makeText(context, "Datos guardados", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "El alumno se creó exitosamente", LENGTH_LONG).show();
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
                 Log.e(TAG, "Error: " + retrofitError);
-                Toast.makeText(context, "Error: " + retrofitError.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Error creando el alumno: " + retrofitError.getMessage(),
+                        LENGTH_LONG).show();
             }
         });
     }
 
     public static void updateStudent(Student student, final Context context) {
-        Toast.makeText(context, "ID: " + student.getId(), Toast.LENGTH_LONG).show();
         StudentWebService webService = WebServiceFactory.getWebService(StudentWebService.class);
         final SharedPreferences prefs = context.getSharedPreferences(
                 SettingsActivity.SettingsFragment.SETTINGS_PREFS_FILE,
@@ -53,16 +54,15 @@ public class StudentService {
         webService.updateStudent(student, student.getId(), new Callback<Student>() {
             @Override
             public void success(Student student, Response response) {
-                Log.d(TAG, "Se actualizó el Alumno con id: " + student.getId());
-                Toast.makeText(context, "Datos guardados, id: " + student.getId(),
-                        Toast.LENGTH_LONG).show();
+                Log.d(TAG, "UPDATE Student id: " + student.getId());
+                Toast.makeText(context, "El alumno se actualizó correctamente", LENGTH_LONG).show();
             }
 
             @Override
             public void failure(RetrofitError error) {
                 Log.e(TAG, "Error: " + error);
-                Toast.makeText(context, "Error: " + error.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Error actualizando el alumno: " + error.getMessage(),
+                        LENGTH_LONG).show();
             }
         });
     }
