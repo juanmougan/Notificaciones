@@ -11,6 +11,7 @@ import retrofit.converter.GsonConverter;
 public class WebServiceFactory {
 
     private static final String ENDPOINT = "http://192.168.56.1:1337";  // GENYMOTION
+//    private static final String ENDPOINT = "http://10.0.3.2:1337";  // URL alternativa
 
     public static <T> T getWebService(Class<T> webServiceClass) {
         RestAdapter restAdapter = new RestAdapter.Builder()

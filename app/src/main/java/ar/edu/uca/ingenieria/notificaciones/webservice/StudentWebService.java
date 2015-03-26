@@ -5,7 +5,7 @@ import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.Query;
+import retrofit.http.Path;
 
 /**
  * Webservice usado para comunicarse con el backend
@@ -16,7 +16,7 @@ public interface StudentWebService {
     @POST("/student")
     void createStudent(@Body Student student, Callback<Student> callback);
 
-    @PUT("/student")
-    void updateStudent(@Body Student student, @Query("id") int id, Callback<Student> callback);
+    @PUT("/student/{id}")
+    void updateStudent(@Body Student student, @Path("id") int id, Callback<Student> callback);
 
 }
