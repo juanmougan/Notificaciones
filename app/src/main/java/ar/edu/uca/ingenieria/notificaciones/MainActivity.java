@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import ar.edu.uca.ingenieria.notificaciones.gcm.GooglePlayServicesUtil;
 
 import java.io.IOException;
 import java.util.Date;
@@ -136,18 +137,7 @@ public class MainActivity extends ListActivity {
      * the Google Play Store or enable it in the device's system settings.
      */
     private boolean checkPlayServices() {
-//        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-//        if (resultCode != ConnectionResult.SUCCESS) {
-//            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-//                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-//                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-//            } else {
-//                Log.i(TAG, "This device is not supported.");
-//                finish();
-//            }
-//            return false;
-//        }
-        return true;
+        return GooglePlayServicesUtil.checkPlayServices(this);
     }
 
     /**
