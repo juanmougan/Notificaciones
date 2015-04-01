@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.view.MenuItem;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import ar.edu.uca.ingenieria.notificaciones.gcm.GooglePlayServicesUtil;
 
-import java.io.IOException;
 import java.util.Date;
 
 import ar.edu.uca.ingenieria.notificaciones.adapter.NotificacionesAdapter;
@@ -31,10 +29,10 @@ import ar.edu.uca.ingenieria.notificaciones.model.Notification;
 public class MainActivity extends ListActivity {
 
     public static final String PROPERTY_REG_ID = "registration_id";
-    private static final String PROPERTY_APP_VERSION = "appVersion";
+    public static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PREFERENCE_FIRST_RUN = "preferenceFirstRun";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "Notificaciones MainActivity";
+    private static final String TAG = "MainActivity";
 
     /**
      * Es el project number obtenido en la API Console, como se explica en "Getting Started."
@@ -44,6 +42,7 @@ public class MainActivity extends ListActivity {
     GoogleCloudMessaging gcm;
     Context context;
     String regid;
+    private GooglePlayServicesUtil googlePlayServicesUtil;
     private NotificacionesAdapter notificacionesAdapter;
 
     @Override
@@ -51,11 +50,11 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         context = getApplicationContext();
+        this.googlePlayServicesUtil = new GooglePlayServicesUtil(this);
         if (isFirstRun()) {
             Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
             this.startActivity(openSettingsIntent);
         }
-        senderId = getSenderId();
         intentarRegistrarGooglePlayServices();
 
         Notification notificacion;
@@ -79,18 +78,7 @@ public class MainActivity extends ListActivity {
      * registrarse y guarda el regid obtenido.
      */
     private void intentarRegistrarGooglePlayServices() {
-        // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
-            regid = getRegistrationId(context);
-
-            if (regid.isEmpty()) {
-                registerInBackground();
-            }
-        } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
-        }
-        Log.i(TAG, "regid: " + this.regid);
+        googlePlayServicesUtil.tryToRegisterGooglePlayServices();
     }
 
     private Notification getNotificacionFromIntent() {
@@ -137,7 +125,7 @@ public class MainActivity extends ListActivity {
      * the Google Play Store or enable it in the device's system settings.
      */
     private boolean checkPlayServices() {
-        return GooglePlayServicesUtil.checkPlayServices(this);
+        return googlePlayServicesUtil.checkPlayServices();
     }
 
     /**
@@ -147,6 +135,7 @@ public class MainActivity extends ListActivity {
      * @param context application's context.
      * @param regId   registration ID
      */
+    // TODO ver si esto lo muevo a GPSU
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGcmPreferences(context);
         int appVersion = getAppVersion(context);
@@ -158,74 +147,15 @@ public class MainActivity extends ListActivity {
     }
 
     /**
-     * Gets the current registration ID for application on GCM service, if there is one.
-     * <p/>
-     * If result is empty, the app needs to register.
-     *
-     * @return registration ID, or empty string if there is no existing
-     * registration ID.
+     * @return Application's {@code SharedPreferences}.
      */
-    private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGcmPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-        if (registrationId.isEmpty()) {
-            Log.i(TAG, "Registration not found.");
-            return "";
-        }
-        // Check if app was updated; if so, it must clear the registration ID
-        // since the existing regID is not guaranteed to work with the new
-        // app version.
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = getAppVersion(context);
-        if (registeredVersion != currentVersion) {
-            Log.i(TAG, "App version changed.");
-            return "";
-        }
-        return registrationId;
-    }
-
-    /**
-     * Registers the application with GCM servers asynchronously.
-     * <p/>
-     * Stores the registration ID and the app versionCode in the application's
-     * shared preferences.
-     */
-    private void registerInBackground() {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                String msg = "";
-                try {
-                    if (gcm == null) {
-                        gcm = GoogleCloudMessaging.getInstance(context);
-                    }
-                    regid = gcm.register(senderId);
-                    msg = "Device registered, registration ID=" + regid;
-
-                    // You should send the registration ID to your server over HTTP, so it
-                    // can use GCM/HTTP or CCS to send messages to your app.
-                    sendRegistrationIdToBackend();
-
-                    // For this demo: we don't need to send it because the device will send
-                    // upstream messages to a server that echo back the message using the
-                    // 'from' address in the message.
-
-                    // Persist the regID - no need to register again.
-                    storeRegistrationId(context, regid);
-                } catch (IOException ex) {
-                    msg = "Error :" + ex.getMessage();
-                    // If there is an error, don't just keep trying to register.
-                    // Require the user to click a button again, or perform
-                    // exponential back-off.
-                }
-                return msg;
-            }
-
-            @Override
-            protected void onPostExecute(String msg) {
-                Log.d(TAG, "Response from Google: " + msg);
-            }
-        }.execute(null, null, null);
+    // TODO ver este no usa el getSharedPreferences del context, ojo
+    // TODO comparar con el que esta en GPSU
+    private SharedPreferences getGcmPreferences(Context context) {
+        // This sample app persists the registration ID in shared preferences, but
+        // how you store the regID in your app is up to you.
+        return getSharedPreferences(GooglePlayServicesUtil.class.getSimpleName(),
+                Context.MODE_PRIVATE);
     }
 
     @Override
@@ -256,6 +186,7 @@ public class MainActivity extends ListActivity {
     /**
      * @return Application's version code from the {@code PackageManager}.
      */
+    // TODO mover a GPSU?
     private static int getAppVersion(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager()
@@ -265,16 +196,6 @@ public class MainActivity extends ListActivity {
             // should never happen
             throw new RuntimeException("Could not get package name: " + e);
         }
-    }
-
-    /**
-     * @return Application's {@code SharedPreferences}.
-     */
-    private SharedPreferences getGcmPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences, but
-        // how you store the regID in your app is up to you.
-        return getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
     }
 
     // TODO implementar esto del lado del server
@@ -288,13 +209,6 @@ public class MainActivity extends ListActivity {
      */
     private void sendRegistrationIdToBackend() {
         // Your implementation here.
-    }
-
-    // TODO: esto no es responsabilidad de esta clase...
-    // Tal vez un "setting provider" o similar
-    private String getSenderId() {
-        Resources res = getResources();
-        return res.getString(R.string.senderId);
     }
 
 }
