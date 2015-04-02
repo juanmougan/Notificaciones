@@ -31,17 +31,9 @@ public class MainActivity extends ListActivity {
     public static final String PROPERTY_REG_ID = "registration_id";
     public static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PREFERENCE_FIRST_RUN = "preferenceFirstRun";
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
-    /**
-     * Es el project number obtenido en la API Console, como se explica en "Getting Started."
-     */
-    String senderId;
-
-    GoogleCloudMessaging gcm;
-    Context context;
-    String regid;
+    Context context;    // TODO tal vez lo pueda volar...
     private GooglePlayServicesUtil googlePlayServicesUtil;
     private NotificacionesAdapter notificacionesAdapter;
 
@@ -51,11 +43,14 @@ public class MainActivity extends ListActivity {
 
         context = getApplicationContext();
         this.googlePlayServicesUtil = new GooglePlayServicesUtil(this);
+        // TODO esto es asincronico
+        intentarRegistrarGooglePlayServices();
+        // TODO y esto sincronico. Y si pongo un hook aca, cosa que llame a isFirstRun() si registró
+        // OK (o si ya estaba registrado)? Así me aseguro tener siempre el regid
         if (isFirstRun()) {
             Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
             this.startActivity(openSettingsIntent);
         }
-        intentarRegistrarGooglePlayServices();
 
         Notification notificacion;
         // TODO refactor - usar el Parcelable aca y consultar por notificacion != null
@@ -97,7 +92,6 @@ public class MainActivity extends ListActivity {
         super.onResume();
         // Check device for Play Services APK.
         checkPlayServices();
-        Log.i(TAG, "regid: " + this.regid);
         Log.d(TAG, "onResume");
     }
 
@@ -128,35 +122,14 @@ public class MainActivity extends ListActivity {
         return googlePlayServicesUtil.checkPlayServices();
     }
 
-    /**
-     * Stores the registration ID and the app versionCode in the application's
-     * {@code SharedPreferences}.
-     *
-     * @param context application's context.
-     * @param regId   registration ID
-     */
-    // TODO ver si esto lo muevo a GPSU
-    private void storeRegistrationId(Context context, String regId) {
-        final SharedPreferences prefs = getGcmPreferences(context);
-        int appVersion = getAppVersion(context);
-        Log.i(TAG, "Saving regId on app version " + appVersion);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PROPERTY_REG_ID, regId);
-        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        editor.apply();
-    }
-
-    /**
-     * @return Application's {@code SharedPreferences}.
-     */
-    // TODO ver este no usa el getSharedPreferences del context, ojo
+    // TODO ver este no usa el getSharedPreferences del context, ojo - este usa un ApplicationContext
     // TODO comparar con el que esta en GPSU
-    private SharedPreferences getGcmPreferences(Context context) {
+    //private SharedPreferences getGcmPreferences(Context context) {
         // This sample app persists the registration ID in shared preferences, but
         // how you store the regID in your app is up to you.
-        return getSharedPreferences(GooglePlayServicesUtil.class.getSimpleName(),
-                Context.MODE_PRIVATE);
-    }
+    //    return getSharedPreferences(GooglePlayServicesUtil.class.getSimpleName(),
+    //            Context.MODE_PRIVATE);
+    //}
 
     @Override
     protected void onDestroy() {
@@ -181,34 +154,6 @@ public class MainActivity extends ListActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    // TODO mover a GPSU?
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
-
-    // TODO implementar esto del lado del server
-    // Ver https://trello.com/c/EDjnB9dm
-    // La lógica correspondiente NO es responsabilidad de esta clase!
-
-    /**
-     * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
-     * messages to your app. Not needed for this demo since the device sends upstream messages
-     * to a server that echoes back the message using the 'from' address in the message.
-     */
-    private void sendRegistrationIdToBackend() {
-        // Your implementation here.
     }
 
 }

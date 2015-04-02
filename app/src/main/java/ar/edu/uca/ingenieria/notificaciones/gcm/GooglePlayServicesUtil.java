@@ -175,6 +175,11 @@ public class GooglePlayServicesUtil {
 
     // TODO: esto no es responsabilidad de esta clase...
     // Tal vez un "setting provider" o similar
+
+    /**
+     * Es el project number obtenido en la API Console, como se explica en "Getting Started."
+     * @return el senderId que está persistido en las SharedPreferences
+     */
     private String getSenderId() {
         Resources res = activity.getResources();
         return res.getString(R.string.senderId);

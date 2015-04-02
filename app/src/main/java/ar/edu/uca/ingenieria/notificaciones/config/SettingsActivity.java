@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import ar.edu.uca.ingenieria.notificaciones.R;
 import ar.edu.uca.ingenieria.notificaciones.model.Student;
@@ -36,6 +37,7 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Student s = obtenerDatosAlumno();
+                Toast.makeText(SettingsActivity.this, "Regid: " + s.getRegid(), Toast.LENGTH_LONG).show();
 //                Student s = new Student.StudentBuilder().firstName("first name").
 //                        lastName("last name").fileNumber("file number")./*career(Career.INFORMATICA).*/
 //                        regid("regid").email("email@email.com").build();
