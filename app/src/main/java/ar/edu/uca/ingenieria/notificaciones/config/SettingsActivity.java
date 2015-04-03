@@ -2,6 +2,7 @@ package ar.edu.uca.ingenieria.notificaciones.config;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -12,10 +13,15 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import ar.edu.uca.ingenieria.notificaciones.R;
+import ar.edu.uca.ingenieria.notificaciones.gcm.GooglePlayServicesUtil;
 import ar.edu.uca.ingenieria.notificaciones.model.Student;
 import ar.edu.uca.ingenieria.notificaciones.webservice.StudentService;
 
 public class SettingsActivity extends Activity {
+
+    public static String REPOST_NEEDED = "repost_needed";
+    public static String NEW_REGID = "new_regid";
+    private String regid;
 
     // TODO ademas del fragment, agregar botones?
 
@@ -29,6 +35,19 @@ public class SettingsActivity extends Activity {
                     .commit();
         }
         createListenerForButton();
+        checkIfRepostStudentNeeded();
+    }
+
+    private void checkIfRepostStudentNeeded() {
+        // TODO viene un un Bundle
+        Intent intent = this.getIntent();
+        boolean repost = intent.getBooleanExtra(REPOST_NEEDED, false);
+        if (repost) {
+            // TODO quizas un Dialog en vez de un Toast
+            Toast.makeText(this, "Por favor, confirmar los datos personales.", Toast.LENGTH_LONG).show();
+            GooglePlayServicesUtil util = new GooglePlayServicesUtil(this);
+            regid = util.getRegistrationId(this);
+        }
     }
 
     private void createListenerForButton() {
@@ -37,7 +56,6 @@ public class SettingsActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Student s = obtenerDatosAlumno();
-                Toast.makeText(SettingsActivity.this, "Regid: " + s.getRegid(), Toast.LENGTH_LONG).show();
 //                Student s = new Student.StudentBuilder().firstName("first name").
 //                        lastName("last name").fileNumber("file number")./*career(Career.INFORMATICA).*/
 //                        regid("regid").email("email@email.com").build();
@@ -70,7 +88,7 @@ public class SettingsActivity extends Activity {
                 .firstName(prefs.getString("pref_key_nombre_alumno", ""))
                 .lastName(prefs.getString("pref_key_apellido_alumno", ""))
                 .fileNumber(prefs.getString("pref_key_numero_registro", ""))
-                .regid(prefs.getString("regid", ""))
+                .regid(prefs.getString("regid", this.regid))    // Si no tiene, saco el de las SP.
                 .email(prefs.getString("pref_key_email", ""))
                 .build();
         return student;

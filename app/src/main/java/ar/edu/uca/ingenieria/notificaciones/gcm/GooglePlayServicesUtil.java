@@ -29,6 +29,7 @@ public class GooglePlayServicesUtil {
     // TODO externalizar este String
     public static final String PLAY_SERVICES_ERROR_MSG = "Este dispositivo no soporta Google Play Services. No se podrá utilizar esta aplicación";
     private final Activity activity;
+    private GcmRegistrationCallback callback;
 
     public String getRegid() {
         return regid;
@@ -44,7 +45,6 @@ public class GooglePlayServicesUtil {
     /**
      * Verifica que el teléfono tenga instalado Google Play Services. En caso contrario, solicita su
      * instalación.
-     *
      */
     public boolean checkPlayServices() {
         int resultCode = com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
@@ -70,6 +70,8 @@ public class GooglePlayServicesUtil {
 
             if (regid.isEmpty()) {
                 registerInBackground();
+            } else {
+                this.callback.onRegistrationSuccess();
             }
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
@@ -85,7 +87,7 @@ public class GooglePlayServicesUtil {
      * @return registration ID, or empty string if there is no existing
      * registration ID.
      */
-    private String getRegistrationId(Context context) {
+    public String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGcmPreferences(context);
         String registrationId = prefs.getString(MainActivity.PROPERTY_REG_ID, "");
         if (registrationId.isEmpty()) {
@@ -169,6 +171,7 @@ public class GooglePlayServicesUtil {
             @Override
             protected void onPostExecute(String msg) {
                 Log.d(TAG, "Response from Google: " + msg);
+                GooglePlayServicesUtil.this.callback.onRePostStudent();
             }
         }.execute(null, null, null);
     }
@@ -178,6 +181,7 @@ public class GooglePlayServicesUtil {
 
     /**
      * Es el project number obtenido en la API Console, como se explica en "Getting Started."
+     *
      * @return el senderId que está persistido en las SharedPreferences
      */
     private String getSenderId() {
@@ -202,4 +206,7 @@ public class GooglePlayServicesUtil {
         editor.apply();
     }
 
+    public void setCallback(GcmRegistrationCallback callback) {
+        this.callback = callback;
+    }
 }

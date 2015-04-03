@@ -4,29 +4,25 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import ar.edu.uca.ingenieria.notificaciones.gcm.GooglePlayServicesUtil;
-
 import java.util.Date;
 
 import ar.edu.uca.ingenieria.notificaciones.adapter.NotificacionesAdapter;
 import ar.edu.uca.ingenieria.notificaciones.config.SettingsActivity;
 import ar.edu.uca.ingenieria.notificaciones.gcm.GcmIntentService;
+import ar.edu.uca.ingenieria.notificaciones.gcm.GcmRegistrationCallback;
+import ar.edu.uca.ingenieria.notificaciones.gcm.GooglePlayServicesUtil;
 import ar.edu.uca.ingenieria.notificaciones.model.Notification;
 
 /**
  * Main UI for the demo app.
  */
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements GcmRegistrationCallback {
 
     public static final String PROPERTY_REG_ID = "registration_id";
     public static final String PROPERTY_APP_VERSION = "appVersion";
@@ -43,15 +39,19 @@ public class MainActivity extends ListActivity {
 
         context = getApplicationContext();
         this.googlePlayServicesUtil = new GooglePlayServicesUtil(this);
+        this.googlePlayServicesUtil.setCallback(this);
         // TODO esto es asincronico
         intentarRegistrarGooglePlayServices();
-        // TODO y esto sincronico. Y si pongo un hook aca, cosa que llame a isFirstRun() si registró
-        // OK (o si ya estaba registrado)? Así me aseguro tener siempre el regid
-        if (isFirstRun()) {
-            Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
-            this.startActivity(openSettingsIntent);
-        }
 
+    }
+
+    @Override
+    public void onRegistrationSuccess() {
+        this.checkFirstRun();
+        this.setupListView();
+    }
+
+    private void setupListView() {
         Notification notificacion;
         // TODO refactor - usar el Parcelable aca y consultar por notificacion != null
         // ver https://trello.com/c/N6KsGEjN
@@ -60,6 +60,25 @@ public class MainActivity extends ListActivity {
             inicializarListView();
             this.notificacionesAdapter.add(notificacion);
         }
+    }
+
+    private void checkFirstRun() {
+        if (isFirstRun()) {
+            Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
+            this.startActivity(openSettingsIntent);
+        }
+    }
+
+    @Override
+    public void onRePostStudent() {
+        Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
+        openSettingsIntent.putExtra(SettingsActivity.REPOST_NEEDED, true);
+        this.startActivity(openSettingsIntent);
+    }
+
+    @Override
+    public void onRegistrationFailure() {
+        MainActivity.this.finish();
     }
 
     private void inicializarListView() {
@@ -125,8 +144,8 @@ public class MainActivity extends ListActivity {
     // TODO ver este no usa el getSharedPreferences del context, ojo - este usa un ApplicationContext
     // TODO comparar con el que esta en GPSU
     //private SharedPreferences getGcmPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences, but
-        // how you store the regID in your app is up to you.
+    // This sample app persists the registration ID in shared preferences, but
+    // how you store the regID in your app is up to you.
     //    return getSharedPreferences(GooglePlayServicesUtil.class.getSimpleName(),
     //            Context.MODE_PRIVATE);
     //}
