@@ -1,5 +1,6 @@
 package ar.edu.uca.ingenieria.notificaciones.webservice;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -34,6 +35,7 @@ public class StudentService {
                 editor.putInt("student_id", createdStudent.getId());
                 editor.apply();
                 Toast.makeText(context, "El alumno se creó exitosamente", LENGTH_LONG).show();
+                ((Activity) context).finish();
             }
 
             @Override
@@ -56,6 +58,7 @@ public class StudentService {
             public void success(Student student, Response response) {
                 Log.d(TAG, "UPDATE Student id: " + student.getId());
                 Toast.makeText(context, "El alumno se actualizó correctamente", LENGTH_LONG).show();
+                ((Activity) context).finish();
             }
 
             @Override
