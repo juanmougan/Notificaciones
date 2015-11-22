@@ -25,7 +25,7 @@ import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
  * a GcmBroadcastReceiver.completeWakefulIntent() para soltar el wake lock.
  */
 public class GcmIntentService extends IntentService {
-    public static final int NOTIFICATION_ID = 1;
+    public static int NOTIFICATION_ID = 1;
     private static final String TAG = GcmIntentService.class.getSimpleName();
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
@@ -67,7 +67,6 @@ public class GcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-//                doFakeWork(extras);
                 sendNotification(tituloNotificacion, mensajeNotificacion, fechaNotificacion);
             }
         }
@@ -84,24 +83,6 @@ public class GcmIntentService extends IntentService {
         return intent;
     }
 
-    // TODO borrar este metodo
-    private void doFakeWork(Bundle extras) {
-        // This loop represents the service doing some work.
-        for (int i = 0; i < 5; i++) {
-            Log.i(TAG, "Working... " + (i + 1)
-                    + "/5 @ " + SystemClock.elapsedRealtime());
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-        // Post notification of received message.
-        sendNotification("GCM", "Received: " + extras.toString(), new Date());
-        Log.i(TAG, "Received: " + extras.toString());
-    }
-
     /**
      * Pone el título y el mensaje en una notificación, y la postea (la muestra en status bar)
      *
@@ -112,7 +93,7 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // En teoría Marge, acá invocamos a nuestra aplicación...
+        // Acá invocamos a nuestra aplicación...
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 getIntentQueContieneLaNotificacion(titulo, msg, fecha), PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -127,7 +108,7 @@ public class GcmIntentService extends IntentService {
                         .setAutoCancel(true);
 
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        mNotificationManager.notify(++NOTIFICATION_ID, mBuilder.build());
     }
 
     // TODO: esto no es responsabilidad de esta clase...
