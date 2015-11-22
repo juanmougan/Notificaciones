@@ -71,12 +71,14 @@ public class GooglePlayServicesUtil {
             if (regid.isEmpty()) {
                 registerInBackground();
             } else {
-                this.callback.onRegistrationSuccess();
+                this.callback.onAlreadyRegistered();
             }
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
+            this.callback.onRegistrationFailure();
         }
         Log.i(TAG, "regid: " + regid);
+        this.callback.onAlreadyRegistered();
     }
 
     /**

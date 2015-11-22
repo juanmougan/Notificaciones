@@ -9,6 +9,11 @@ public interface GcmRegistrationCallback {
     /**
      * Hay un regid, se puede proseguir con la Activity.
      */
+    void onAlreadyRegistered();
+
+    /**
+     * Se registró exitosamente
+     */
     void onRegistrationSuccess();
 
     /**

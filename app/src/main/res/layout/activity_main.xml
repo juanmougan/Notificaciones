@@ -2,14 +2,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <LinearLayout android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
         <ListView
             android:id="@+id/lista_notificaciones"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <!--
         <LinearLayout
@@ -36,9 +37,14 @@
         -->
 
         <TextView
-            android:id="@+id/display"
+            android:id="@+id/emptyElement"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="fill_parent"
+            android:text="No hay Notificaciones"
+            android:textStyle="bold"
+            android:textSize="25sp"
+            android:visibility="gone"
+            android:gravity="center"/>
 
     </LinearLayout>
 

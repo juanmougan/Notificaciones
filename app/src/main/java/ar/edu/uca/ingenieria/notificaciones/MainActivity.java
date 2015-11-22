@@ -7,8 +7,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.Date;
 
@@ -33,6 +38,16 @@ public class MainActivity extends ListActivity implements GcmRegistrationCallbac
     private GooglePlayServicesUtil googlePlayServicesUtil;
     private NotificacionesAdapter notificacionesAdapter;
 
+    private void setupEmptyView() {
+        View empty = findViewById(R.id.emptyElement);
+        if (empty == null) {
+            View view = LayoutInflater.from(this.context).inflate(R.layout.activity_main, null);
+            empty = (TextView) view.findViewById(R.id.emptyElement);
+        }
+        ListView list = this.getListView();
+        list.setEmptyView(empty);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +57,10 @@ public class MainActivity extends ListActivity implements GcmRegistrationCallbac
         this.googlePlayServicesUtil.setCallback(this);
         // TODO esto es asincronico
         intentarRegistrarGooglePlayServices();
-
     }
 
     @Override
-    public void onRegistrationSuccess() {
+    public void onAlreadyRegistered() {
         this.checkFirstRun();
         this.setupListView();
     }
@@ -60,6 +74,7 @@ public class MainActivity extends ListActivity implements GcmRegistrationCallbac
             inicializarListView();
             this.notificacionesAdapter.add(notificacion);
         }
+        this.setupEmptyView();
     }
 
     private void checkFirstRun() {
@@ -74,6 +89,12 @@ public class MainActivity extends ListActivity implements GcmRegistrationCallbac
         Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
         openSettingsIntent.putExtra(SettingsActivity.REPOST_NEEDED, true);
         this.startActivity(openSettingsIntent);
+    }
+
+    @Override
+    public void onRegistrationSuccess() {
+        this.checkFirstRun();
+        this.setupListView();
     }
 
     @Override
