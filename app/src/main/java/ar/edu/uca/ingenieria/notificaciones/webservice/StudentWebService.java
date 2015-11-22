@@ -26,7 +26,7 @@ public interface StudentWebService {
                      @Query("file_number") String fileNumber,
                      Callback<List<Student>> callback);
 
-    @PUT("/student/{id}")
+    @PUT("/students/{id}")
     void updateStudent(@Body Student student, @Path("id") int id, Callback<Student> callback);
 
 }

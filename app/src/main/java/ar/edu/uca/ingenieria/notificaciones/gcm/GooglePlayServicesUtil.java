@@ -78,6 +78,7 @@ public class GooglePlayServicesUtil {
             this.callback.onRegistrationFailure();
         }
         Log.i(TAG, "regid: " + regid);
+        storeRegistrationId(activity.getApplicationContext(), regid);
         this.callback.onAlreadyRegistered();
     }
 

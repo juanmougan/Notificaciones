@@ -29,7 +29,6 @@ public class StudentService {
                 SettingsActivity.SettingsFragment.SETTINGS_PREFS_FILE,
                 Context.MODE_PRIVATE);
         // TODO refactor!!! https://trello.com/c/OvbyOlWC
-        /*
         webService.createStudent(student, new Callback<Student>() {
             @Override
             public void success(Student createdStudent, Response response) {
@@ -44,36 +43,52 @@ public class StudentService {
             @Override
             public void failure(RetrofitError retrofitError) {
                 Log.e(TAG, "Error: " + retrofitError);
-                Toast.makeText(context, "Error creando el alumno: " + retrofitError.getMessage(),
-                        LENGTH_LONG).show();
+                StudentService.showToastError(context, retrofitError.getMessage());
             }
         });
-        */
-        webService.getStudents("Mariana", "González", "12345678", new Callback<List<Student>>() {
+
+    }
+
+    // TODO Mientras esta clase tenga métodos estáticos, este método va a ser un asco...
+    public static void updateStudent(final Student student, final Context context) {
+        StudentWebService webService = WebServiceFactory.getWebService(StudentWebService.class);
+        // Buscar el Student en el backend
+        webService.getStudents(student.getFirstName(), student.getLastName(), student.getFileNumber(), new Callback<List<Student>>() {
             @Override
             public void success(List<Student> students, Response response) {
-                Log.d(TAG, students.get(0).toString());
+                if (students.size() == 0) {
+                    StudentService.showToastError(context, "No se encontró el alumno");
+                } else {
+                    Student studentToUpdate = students.get(0);
+                    studentToUpdate.setRegid(student.getRegid());
+                    Log.d(TAG, studentToUpdate.toString());
+                    performUpdateStudent(studentToUpdate, context);
+                }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.d(TAG, error.toString());
+                Log.e(TAG, "Error confirmando los datos del alumno: " + error);
+                StudentService.showToastError(context, error.getMessage());
             }
         });
     }
 
-    // TODO agregar un "get students by criteria" para buscar el id del Student a actualizar
+    private static void showToastError(Context context, String error) {
+        Toast.makeText(context, "Error confirmando los datos del alumno: " + error,
+                LENGTH_LONG).show();
+    }
 
-    public static void updateStudent(Student student, final Context context) {
+    private static void performUpdateStudent(Student student, final Context context) {
         StudentWebService webService = WebServiceFactory.getWebService(StudentWebService.class);
         final SharedPreferences prefs = context.getSharedPreferences(
                 SettingsActivity.SettingsFragment.SETTINGS_PREFS_FILE,
                 Context.MODE_PRIVATE);
+
         // TODO refactor!!! https://trello.com/c/OvbyOlWC
         webService.updateStudent(student, student.getId(), new Callback<Student>() {
             @Override
             public void success(Student student, Response response) {
-                Log.d(TAG, "UPDATE Student id: " + student.getId());
                 Toast.makeText(context, "El alumno se actualizó correctamente", LENGTH_LONG).show();
                 ((Activity) context).finish();
             }
@@ -81,8 +96,7 @@ public class StudentService {
             @Override
             public void failure(RetrofitError error) {
                 Log.e(TAG, "Error: " + error);
-                Toast.makeText(context, "Error actualizando el alumno: " + error.getMessage(),
-                        LENGTH_LONG).show();
+                StudentService.showToastError(context, error.getMessage());
             }
         });
     }

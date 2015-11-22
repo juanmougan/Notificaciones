@@ -59,11 +59,16 @@ public class SettingsActivity extends Activity {
 //                Student s = new Student.StudentBuilder().firstName("first name").
 //                        lastName("last name").fileNumber("file number")./*career(Career.INFORMATICA).*/
 //                        regid("regid").email("email@email.com").build();
+
+                // Solo se permite crear Students desde el backend
+                /*
                 if (yaExisteAlumno()) {
                     StudentService.updateStudent(s, SettingsActivity.this);
                 } else {
                     StudentService.createStudent(s, SettingsActivity.this);
                 }
+                */
+                StudentService.updateStudent(s, SettingsActivity.this);
             }
         });
     }
@@ -82,13 +87,15 @@ public class SettingsActivity extends Activity {
         SharedPreferences prefs = this.getSharedPreferences(
                 SettingsFragment.SETTINGS_PREFS_FILE,
                 Context.MODE_PRIVATE);
+        SharedPreferences gcmPrefs = this.getSharedPreferences(GooglePlayServicesUtil.class.getSimpleName(),
+                Context.MODE_PRIVATE);
         // TODO Arreglar Carrera y completar regid
         Student student = new Student.StudentBuilder()
                 .id(prefs.getInt("student_id", 0))
                 .firstName(prefs.getString("pref_key_nombre_alumno", ""))
                 .lastName(prefs.getString("pref_key_apellido_alumno", ""))
                 .fileNumber(prefs.getString("pref_key_numero_registro", ""))
-                .regid(prefs.getString("regid", this.regid))    // Si no tiene, saco el de las SP.
+                .regid(gcmPrefs.getString("registration_id", this.regid))    // Si no tiene, saco el de las SP.
                 .email(prefs.getString("pref_key_email", ""))
                 .build();
         return student;
