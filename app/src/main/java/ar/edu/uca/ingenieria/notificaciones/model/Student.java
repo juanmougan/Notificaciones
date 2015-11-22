@@ -1,5 +1,7 @@
 package ar.edu.uca.ingenieria.notificaciones.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Modela un alumno. Copia de la contraparte del backend en:
  * https://github.com/juanmougan/backendNotificaciones/blob/master/api/models/Student.js
@@ -10,10 +12,13 @@ public class Student {
 
     private int id;
 
+    @SerializedName("first_name")
     private String firstName;
 
+    @SerializedName("last_name")
     private String lastName;
 
+    @SerializedName("file_number")
     private String fileNumber;
 
     private Career career;
@@ -151,4 +156,16 @@ public class Student {
 
     }
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", fileNumber='" + fileNumber + '\'' +
+                ", career=" + career +
+                ", regid='" + regid + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

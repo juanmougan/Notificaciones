@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.List;
+
 import ar.edu.uca.ingenieria.notificaciones.config.SettingsActivity;
 import ar.edu.uca.ingenieria.notificaciones.model.Student;
 import retrofit.Callback;
@@ -27,6 +29,7 @@ public class StudentService {
                 SettingsActivity.SettingsFragment.SETTINGS_PREFS_FILE,
                 Context.MODE_PRIVATE);
         // TODO refactor!!! https://trello.com/c/OvbyOlWC
+        /*
         webService.createStudent(student, new Callback<Student>() {
             @Override
             public void success(Student createdStudent, Response response) {
@@ -45,7 +48,21 @@ public class StudentService {
                         LENGTH_LONG).show();
             }
         });
+        */
+        webService.getStudents("Mariana", "González", "12345678", new Callback<List<Student>>() {
+            @Override
+            public void success(List<Student> students, Response response) {
+                Log.d(TAG, students.get(0).toString());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, error.toString());
+            }
+        });
     }
+
+    // TODO agregar un "get students by criteria" para buscar el id del Student a actualizar
 
     public static void updateStudent(Student student, final Context context) {
         StudentWebService webService = WebServiceFactory.getWebService(StudentWebService.class);
