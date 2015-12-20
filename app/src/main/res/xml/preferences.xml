@@ -13,10 +13,10 @@
         <EditTextPreference
             android:key="pref_key_numero_registro"
             android:title="@string/config_numero_registro" />
-        <!-- TODO completar esta List -->
-        <ListPreference
+        <!-- TODO en futuras versiones, se podría verificar la Carrera -->
+        <!-- <ListPreference
             android:key="pref_key_carrera"
-            android:title="@string/config_carrera" />
+            android:title="@string/config_carrera" /> -->
         <EditTextPreference
             android:key="pref_key_email"
             android:title="@string/config_email" />
